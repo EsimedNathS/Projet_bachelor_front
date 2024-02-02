@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:mobile/model/User.dart';
 import 'package:mobile/services/MyAPI.dart';
 import 'package:http/http.dart' as http;
@@ -36,5 +38,6 @@ class UserRoutes extends MyAPI {
     final Map<String, dynamic> datas = jsonDecode(result.body);
     return AuthenticationResult.fromMap(datas);
   }
+
 
 }

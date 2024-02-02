@@ -1,15 +1,31 @@
 import 'package:mobile/services/MyAPI.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'LoginState.dart';
 
 class ExerciceRoutes extends MyAPI {
   static const userRoutes = '/exercice';
+  late LoginState loginState;
+  late String token;
+
+  ExerciceRoutes() {
+    init();
+  }
+
+  void init() {
+    loginState = LoginState();
+    token = loginState.getToken() ?? ''; // Assurez-vous que token n'est pas nul
+  }
 
 
   Future getAll() async {
     var result = await http.get(
       Uri.http(MyAPI.apiServ, '$userRoutes'),
+      headers: {'Authorization': 'Bearer $token'},
     );
+    if (result.statusCode == 403) {
+
+    }
     List<dynamic> jsonData = jsonDecode(result.body);
 
     final TopPoly = <dynamic>[];

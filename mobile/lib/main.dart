@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Consumer<LoginState>(
-        builder: (context, loginstate, child) {
-          if (loginstate.connected() == true){
+        builder: (context, validity, child) {
+          if (validity == true){
             return MyHomePage(title: 'Voiture');
             //return ExercicePage();
           }

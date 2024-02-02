@@ -1,7 +1,10 @@
 import 'package:mobile/model/User.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/pages/LoginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
+import 'MyAPI.dart';
 
 class LoginState extends ChangeNotifier{
   User? _user;
@@ -17,6 +20,7 @@ class LoginState extends ChangeNotifier{
   }
 
   LoginState() {
+    final validity = verifyTokenValidity();
     SharedPreferences.getInstance().then((prefs) {
       final login = prefs.getString('login');
       final token = prefs.getString('token');
@@ -26,7 +30,32 @@ class LoginState extends ChangeNotifier{
         notifyListeners();
       }
     });
+  }
 
+
+  Future<bool> verifyTokenValidity() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if ( token != null) {
+      _token = token;
+
+      try {
+        // Envoyer une requête à l'API pour vérifier la validité du token
+        final response = await http.get(
+          Uri.http(MyAPI.apiServ, '/verifyToken'),
+          headers: {'Authorization': 'Bearer $_token'},
+        );
+        if (response.statusCode != 200) {
+          return false;
+        } else {
+          return true;
+        }
+      } catch (error) {
+        print('Erreur lors de la vérification du token: $error');
+      }
+    }
+    return false;
   }
 
   User getUser(){

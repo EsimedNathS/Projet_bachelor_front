@@ -5,6 +5,6 @@ class StatusErrorException {
 }
 
 abstract class MyAPI {
-  static const apiServ = "192.168.2.107:3333" ;
+  static const apiServ = "10.0.2.2:3333" ;
 
 }

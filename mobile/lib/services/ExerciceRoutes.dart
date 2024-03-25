@@ -5,26 +5,16 @@ import 'LoginState.dart';
 
 class ExerciceRoutes extends MyAPI {
   static const userRoutes = '/exercice';
-  late LoginState loginState;
-  late String token;
-
-  ExerciceRoutes() {
-    init();
-  }
-
-  void init() {
-    loginState = LoginState();
-    token = loginState.getToken() ?? ''; // Assurez-vous que token n'est pas nul
-  }
 
 
-  Future getAll() async {
+  Future getAll(LoginState loginState) async {
+    var token = loginState.getToken();
     var result = await http.get(
       Uri.http(MyAPI.apiServ, '$userRoutes'),
       headers: {'Authorization': 'Bearer $token'},
     );
-    if (result.statusCode == 403) {
-
+    if (result.statusCode == 401) {
+      // TODO faire un truc en caq d'erreur
     }
     List<dynamic> jsonData = jsonDecode(result.body);
 

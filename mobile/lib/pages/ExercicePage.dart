@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/components.dart';
+import 'package:mobile/pages/MyHomePage.dart';
 import 'package:mobile/services/ExerciceRoutes.dart';
+import 'package:mobile/services/LoginState.dart';
+import 'package:mobile/model/Exercice.dart';
+import 'package:provider/provider.dart';
 
 class ExercicePage extends StatefulWidget {
-  final exerciceRoutes = ExerciceRoutes();
+  final ExerciceRoutes exerciceRoutes;
+
+  ExercicePage() : exerciceRoutes = ExerciceRoutes();
 
   @override
   State<ExercicePage> createState() => _ExercicePageState();
@@ -16,21 +22,46 @@ class _ExercicePageState extends State<ExercicePage> {
   bool isListVisible_BasPoly = false;
   bool isListVisible_BasIso = false;
 
-  late List<dynamic> tabTopPoly;
-  late List<dynamic> tabTopIso;
-  late List<dynamic> tabBottomPoly;
-  late List<dynamic> tabBottomIso;
+  late List<dynamic> tabTopPoly = [];
+  late List<dynamic> tabTopIso = [];
+  late List<dynamic> tabBottomPoly = [];
+  late List<dynamic> tabBottomIso = [];
 
   bool dataLoaded = false;
 
   var items = ['Pomme', 'Banane', 'Fraise', 'Orange', 'Abricot', 'Melon'];
 
-  getexo() {
-    widget.exerciceRoutes.getAll().then((exercices) {
-      tabTopPoly = exercices[0]['name'];
-      tabTopIso = exercices[1]['name'];
-      tabBottomPoly = exercices[2]['name'];
-      tabBottomIso = exercices[3]['name'];
+  @override
+  void initState() {
+    super.initState();
+    getexo(Provider.of<LoginState>(context, listen: false));
+  }
+
+  getexo( LoginState loginState) {
+    widget.exerciceRoutes.getAll(loginState).then((exercices) {
+      exercices[0].forEach((exerciseData) {
+        Exercice exercice0 = Exercice.fromJson(exerciseData);
+        String nameWithDesc0 = '${exercice0.name}  :  ${exercice0.description}';
+        tabTopPoly.add(nameWithDesc0);
+      });
+
+      exercices[1].forEach((exerciseData) {
+        Exercice exercice1 = Exercice.fromJson(exerciseData);
+        String nameWithDesc1 = '${exercice1.name}  :  ${exercice1.description}';
+        tabTopIso.add(nameWithDesc1);
+      });
+
+      exercices[2].forEach((exerciseData) {
+        Exercice exercice2 = Exercice.fromJson(exerciseData);
+        String nameWithDesc2 = '${exercice2.name}  :  ${exercice2.description}';
+        tabBottomPoly.add(nameWithDesc2);
+      });
+
+      exercices[3].forEach((exerciseData) {
+        Exercice exercice3 = Exercice.fromJson(exerciseData);
+        String nameWithDesc3 = '${exercice3.name}  :  ${exercice3.description}';
+        tabBottomIso.add(nameWithDesc3);
+      });
       setState(() {
         dataLoaded = true;
       });
@@ -44,13 +75,20 @@ class _ExercicePageState extends State<ExercicePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.errorContainer,
         title: Text('Exercices'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context)
+                .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder(
-          future: getexo(),
+          future: Future.value(dataLoaded),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting || !dataLoaded) {
+            if (!dataLoaded ) {
               // Attendez que les données soient chargées
               return CircularProgressIndicator();
             } else {
@@ -75,7 +113,7 @@ class _ExercicePageState extends State<ExercicePage> {
                             Icon(Icons.keyboard_arrow_down),
                             SizedBox(width: 10),
                             Text(
-                              dropdownValue!,
+                              "Polymusculaire",
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
@@ -109,7 +147,7 @@ class _ExercicePageState extends State<ExercicePage> {
                             Icon(Icons.keyboard_arrow_down),
                             SizedBox(width: 10),
                             Text(
-                              dropdownValue!,
+                              "Isolation",
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
@@ -147,7 +185,7 @@ class _ExercicePageState extends State<ExercicePage> {
                             Icon(Icons.keyboard_arrow_down),
                             SizedBox(width: 10),
                             Text(
-                              dropdownValue!,
+                              "Polymusculaire",
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
@@ -157,7 +195,7 @@ class _ExercicePageState extends State<ExercicePage> {
                         visible: isListVisible_BasPoly,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: items.map((item) {
+                          children: tabBottomPoly.map((item) {
                             return ListTile(
                               title: Text(item),
                               onTap: () {
@@ -181,7 +219,7 @@ class _ExercicePageState extends State<ExercicePage> {
                             Icon(Icons.keyboard_arrow_down),
                             SizedBox(width: 10),
                             Text(
-                              dropdownValue!,
+                              "Isolation",
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
@@ -191,7 +229,7 @@ class _ExercicePageState extends State<ExercicePage> {
                         visible: isListVisible_BasIso,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: items.map((item) {
+                          children: tabBottomIso.map((item) {
                             return ListTile(
                               title: Text(item),
                               onTap: () {

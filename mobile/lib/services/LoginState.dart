@@ -20,7 +20,6 @@ class LoginState extends ChangeNotifier{
   }
 
   LoginState() {
-    final validity = verifyTokenValidity();
     SharedPreferences.getInstance().then((prefs) {
       final login = prefs.getString('login');
       final token = prefs.getString('token');
@@ -31,32 +30,8 @@ class LoginState extends ChangeNotifier{
       }
     });
   }
+  //"token" -> "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImEiLCJpYXQiOjE3MTEwMjk0NDUsImV4cCI6MTcxMTA2NTQ0NX0..."
 
-
-  Future<bool> verifyTokenValidity() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-
-    if ( token != null) {
-      _token = token;
-
-      try {
-        // Envoyer une requête à l'API pour vérifier la validité du token
-        final response = await http.get(
-          Uri.http(MyAPI.apiServ, '/verifyToken'),
-          headers: {'Authorization': 'Bearer $_token'},
-        );
-        if (response.statusCode != 200) {
-          return false;
-        } else {
-          return true;
-        }
-      } catch (error) {
-        print('Erreur lors de la vérification du token: $error');
-      }
-    }
-    return false;
-  }
 
   User getUser(){
     return _user!;

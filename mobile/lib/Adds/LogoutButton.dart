@@ -10,11 +10,14 @@ class LogoutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 150.0, // Ajustez la largeur selon vos besoins
+      width: 70.0, // Ajustez la largeur selon vos besoins
       child: MyPadding(
         child: ElevatedButton(
           onPressed: onPressed,
-          child: const MyText('Exerices'), // Ajustez la taille de la police selon vos besoins
+          child: Icon(
+            Icons.logout, // Remplacez "Icons.logout" par l'icône de déconnexion que vous souhaitez utiliser
+            size: 24.0, // Ajustez la taille de l'icône selon vos besoins
+          ),
         ),
       ),
     );

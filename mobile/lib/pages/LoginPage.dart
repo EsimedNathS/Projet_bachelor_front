@@ -8,7 +8,7 @@ import 'package:mobile/services/UserRoutes.dart';
 import 'package:mobile/model/User.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/model/AuthenticationResult.dart';
-import 'package:mobile/main.dart';
+import 'package:mobile/pages/MyHomePage.dart';
 import '../services/MyAPI.dart';
 
 
@@ -107,12 +107,14 @@ class _Loginpage extends State<LoginPage>{
       Provider.of<LoginState>(context, listen: false).setToken(authResult.token);
       Provider.of<LoginState>(context, listen: false).setUser(User(login: _login, password: _password));
       Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage(title: 'Cars')));
+          .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
       return _authResult;
     });
     setState(() {
       processLogin = true;
     });
   }
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImEiLCJpYXQiOjE3MTExMjQ3NTAsImV4cCI6MTcxMTE2MDc1MH0.iBv9yN1pJOarJI4bfK1ELexqNinNX3zxH__JWwcs1UI
 
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImEiLCJpYXQiOjE3MTExMjQ4NjUsImV4cCI6MTcxMTE2MDg2NX0.Emra_rlqtArwgER7l4HY1pOliiK7HuxuD3bO8kSMHGQ
 }

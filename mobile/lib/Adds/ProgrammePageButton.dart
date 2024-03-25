@@ -1,10 +1,10 @@
 import "package:mobile/components.dart";
 import 'package:flutter/material.dart';
 
-class ExercicePageButton extends StatelessWidget {
+class ProgrammePageButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
-  const ExercicePageButton({required this.onPressed, Key? key}) : super(key: key);
+  const ProgrammePageButton({required this.onPressed, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class ExercicePageButton extends StatelessWidget {
       child: MyPadding(
         child: ElevatedButton(
           onPressed: onPressed,
-          child: const MyText('Exerices'), // Ajustez la taille de la police selon vos besoins
+          child: const MyText('Programmes'), // Ajustez la taille de la police selon vos besoins
         ),
       ),
     );

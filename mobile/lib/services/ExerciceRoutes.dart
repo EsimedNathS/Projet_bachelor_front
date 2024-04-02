@@ -14,7 +14,7 @@ class ExerciceRoutes extends MyAPI {
       headers: {'Authorization': 'Bearer $token'},
     );
     if (result.statusCode == 401) {
-      // TODO faire un truc en caq d'erreur
+      // TODO faire un truc en cas d'erreur
     }
     List<dynamic> jsonData = jsonDecode(result.body);
 

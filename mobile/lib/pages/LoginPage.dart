@@ -14,11 +14,16 @@ import '../services/MyAPI.dart';
 
 class LoginPage extends StatefulWidget{
   final userRoutes = UserRoutes();
+  final String? message;
+
+  // Constructeur avec un paramètre optionnel "message"
+  LoginPage({Key? key, this.message}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _Loginpage();
 
 }
+
 
 class _Loginpage extends State<LoginPage>{
   final _formKey = GlobalKey<FormState> ();
@@ -65,6 +70,13 @@ class _Loginpage extends State<LoginPage>{
                FutureBuilder(
                    future: _authResult,
                    builder: (context, snapshot) {
+                     if (widget.message != null){
+                       processLogin = false;
+                       return Column( children: [
+                         MyPadding(child: MyText(widget.message!)),
+                         LoginButton(onPressed: _dologin)
+                       ]);
+                     }
                      if (snapshot.hasError) {
                        processLogin = false;
                        final errorMessage = snapshot.error is StatusErrorException ?
@@ -114,7 +126,4 @@ class _Loginpage extends State<LoginPage>{
       processLogin = true;
     });
   }
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImEiLCJpYXQiOjE3MTExMjQ3NTAsImV4cCI6MTcxMTE2MDc1MH0.iBv9yN1pJOarJI4bfK1ELexqNinNX3zxH__JWwcs1UI
-
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImEiLCJpYXQiOjE3MTExMjQ4NjUsImV4cCI6MTcxMTE2MDg2NX0.Emra_rlqtArwgER7l4HY1pOliiK7HuxuD3bO8kSMHGQ
 }

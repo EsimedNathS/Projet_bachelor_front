@@ -40,7 +40,7 @@ class UserRoutes extends MyAPI {
     return AuthenticationResult.fromMap(datas);
   }
 
-  Future<bool> verifyTokenValidity() async {
+  Future<int> verifyTokenValidity() async {
     var prefs =  await SharedPreferences.getInstance();
     var token = prefs.getString('token');
     if ( token != null) {
@@ -51,16 +51,20 @@ class UserRoutes extends MyAPI {
           Uri.http(MyAPI.apiServ, '/verifyToken'),
           headers: {'Authorization': 'Bearer $token'},
         );
-        if (response.statusCode != 200) {
-          return false;
-        } else {
-          return true;
+        if (response.statusCode == 200) {
+          return 1;
+        }
+        if (response.statusCode == 401) {
+          return 2;
+        }
+        if (response.statusCode == 402) {
+          return 3;
         }
       } catch (error) {
         print('Erreur lors de la vérification du token: $error');
       }
     }
-    return false;
+    return 2;
   }
 
 

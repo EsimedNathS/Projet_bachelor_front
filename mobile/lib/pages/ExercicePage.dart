@@ -4,12 +4,17 @@ import 'package:mobile/pages/MyHomePage.dart';
 import 'package:mobile/services/ExerciceRoutes.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:mobile/model/Exercice.dart';
+import 'package:mobile/model/Programme.dart';
+import 'package:mobile/services/ProgrammeRoutes.dart';
 import 'package:provider/provider.dart';
 
 class ExercicePage extends StatefulWidget {
-  final ExerciceRoutes exerciceRoutes;
+  final programmeRoutes = ProgrammeRoutes();
+  final exerciceRoutes = ExerciceRoutes();
+  bool? Add;
+  final Programme? programme;
 
-  ExercicePage() : exerciceRoutes = ExerciceRoutes();
+  ExercicePage({this.programme = null});
 
   @override
   State<ExercicePage> createState() => _ExercicePageState();
@@ -35,32 +40,42 @@ class _ExercicePageState extends State<ExercicePage> {
   void initState() {
     super.initState();
     getexo(Provider.of<LoginState>(context, listen: false));
+    if (widget.programme != null) widget.Add = true;
   }
 
   getexo( LoginState loginState) {
     widget.exerciceRoutes.getAll(loginState).then((exercices) {
       exercices[0].forEach((exerciseData) {
         Exercice exercice0 = Exercice.fromJson(exerciseData);
-        String nameWithDesc0 = '${exercice0.name}  :  ${exercice0.description}';
-        tabTopPoly.add(nameWithDesc0);
+        tabTopPoly.add({
+          'nameWithDesc': '${exercice0.name}  :  ${exercice0.description}',
+          'id': '${exercice0.id}',
+        });
+
       });
 
       exercices[1].forEach((exerciseData) {
         Exercice exercice1 = Exercice.fromJson(exerciseData);
-        String nameWithDesc1 = '${exercice1.name}  :  ${exercice1.description}';
-        tabTopIso.add(nameWithDesc1);
+        tabTopIso.add({
+          'nameWithDesc': '${exercice1.name}  :  ${exercice1.description}',
+          'id': '${exercice1.id}',
+        });
       });
 
       exercices[2].forEach((exerciseData) {
         Exercice exercice2 = Exercice.fromJson(exerciseData);
-        String nameWithDesc2 = '${exercice2.name}  :  ${exercice2.description}';
-        tabBottomPoly.add(nameWithDesc2);
+        tabBottomPoly.add({
+          'nameWithDesc': '${exercice2.name}  :  ${exercice2.description}',
+          'id': '${exercice2.id}',
+        });
       });
 
       exercices[3].forEach((exerciseData) {
         Exercice exercice3 = Exercice.fromJson(exerciseData);
-        String nameWithDesc3 = '${exercice3.name}  :  ${exercice3.description}';
-        tabBottomIso.add(nameWithDesc3);
+        tabBottomIso.add({
+          'nameWithDesc': '${exercice3.name}  :  ${exercice3.description}',
+          'id': '${exercice3.id}',
+        });
       });
       setState(() {
         dataLoaded = true;
@@ -116,6 +131,7 @@ class _ExercicePageState extends State<ExercicePage> {
                               "Polymusculaire",
                               style: TextStyle(fontSize: 16),
                             ),
+                            //if (widget.Add != null && widget.Add) // Vérifier si Add est vrai
                           ],
                         ),
                       ),
@@ -125,13 +141,13 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabTopPoly.map((item) {
                             return ListTile(
-                              title: Text(item),
-                              onTap: () {
-                                setState(() {
-                                  dropdownValue = item;
-                                  isListVisible_HautPoly = false;
-                                });
-                              },
+                              leading: widget.Add != null && widget.Add! ? GestureDetector(
+                                onTap: () {
+                                  addExo(item);
+                                 },
+                                child: Icon(Icons.add),
+                              ) : null,
+                              title: Text(item['nameWithDesc']),
                             );
                           }).toList(),
                         ),
@@ -159,7 +175,7 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabTopIso.map((item) {
                             return ListTile(
-                              title: Text(item),
+                              title: Text(item['nameWithDesc']),
                               onTap: () {
                                 setState(() {
                                   dropdownValue = item;
@@ -197,7 +213,7 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabBottomPoly.map((item) {
                             return ListTile(
-                              title: Text(item),
+                              title: Text(item['nameWithDesc']),
                               onTap: () {
                                 setState(() {
                                   dropdownValue = item;
@@ -231,7 +247,7 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabBottomIso.map((item) {
                             return ListTile(
-                              title: Text(item),
+                              title: Text(item['nameWithDesc']),
                               onTap: () {
                                 setState(() {
                                   dropdownValue = item;
@@ -252,5 +268,12 @@ class _ExercicePageState extends State<ExercicePage> {
         ),
       ),
     );
+  }
+
+
+  addExo(exercice){
+    var token = Provider.of<LoginState>(context, listen: false).getToken();
+    var AddResult = widget.programmeRoutes.addExercice(token, widget.programme!.id!, int.parse(exercice['id']));
+    return AddResult;
   }
 }

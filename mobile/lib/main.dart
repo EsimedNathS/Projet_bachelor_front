@@ -25,7 +25,7 @@ class MyApp extends StatefulWidget{
 }
 
 class MyAppState extends State<MyApp> {
-  late Future<bool> _validity;
+  late Future<int> _validity;
 
 
   @override
@@ -52,10 +52,16 @@ class MyAppState extends State<MyApp> {
             }
             else {
               if (snapshot.hasData) {
-                if (!snapshot.data!){
+                if (snapshot.data! == 1){
+                  return MyHomePage();
+                }
+                if (snapshot.data! == 2){
                   return LoginPage();
                 }
-                return MyHomePage();
+                if (snapshot.data! == 3){
+                  return LoginPage(message: "Compte inexistant veuillez en créer un nouveau");
+                }
+                return LoginPage();
               }
               else {
                 return Center(child: MyPadding(child: const CircularProgressIndicator()));

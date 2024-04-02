@@ -9,7 +9,7 @@ class ProgrammePageButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 150.0, // Ajustez la largeur selon vos besoins
+      width: 180.0, // Ajustez la largeur selon vos besoins
       child: MyPadding(
         child: ElevatedButton(
           onPressed: onPressed,

@@ -1,7 +1,6 @@
 import 'package:mobile/model/Programme.dart';
 import 'package:mobile/services/MyAPI.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'LoginState.dart';
 
@@ -39,6 +38,34 @@ class ProgrammeRoutes extends MyAPI {
     return id_result;
   }
 
+  Future delete(token, int programme_id) async {
+    var result = await http.delete(
+        Uri.http(MyAPI.apiServ, '$userRoutes/$programme_id'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+        });
+    if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
+    return result.statusCode;
+  }
+
+  Future patchProg(token, int id_programme, String type, String patch) async {
+    Map<String, dynamic> values = {
+      'id_programme' : id_programme,
+      type : patch,
+    };
+    var data = jsonEncode(values);
+    var result = await http.patch(
+        Uri.http(MyAPI.apiServ, '$userRoutes'),
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: data);
+    if (result.statusCode == 403) return false;
+    if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
+    return result.statusCode;
+  }
+
   Future addExercice(token, int programme_id, int exercice_id) async {
     Map<String, dynamic> values = {
       'programme_id': programme_id,
@@ -52,6 +79,26 @@ class ProgrammeRoutes extends MyAPI {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: data
+    );
+    if (result.statusCode == 401) {
+      // TODO faire quelque chose en cas d'erreur
+    }
+    return result.body;
+  }
+
+  Future removeExercice(token, int programme_id, int exercice_id) async {
+    Map<String, dynamic> values = {
+      'programme_id': programme_id,
+      'exercice_id': exercice_id,
+    };
+    var data = jsonEncode(values);
+    var result = await http.delete(
+        Uri.http(MyAPI.apiServ, '${userRoutes}/removeexercice'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: data
     );
     if (result.statusCode == 401) {
       // TODO faire quelque chose en cas d'erreur

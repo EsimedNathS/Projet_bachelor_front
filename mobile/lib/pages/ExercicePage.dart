@@ -13,8 +13,9 @@ class ExercicePage extends StatefulWidget {
   final exerciceRoutes = ExerciceRoutes();
   bool? Add;
   final Programme? programme;
+  List<String>? list_exercices;
 
-  ExercicePage({this.programme = null});
+  ExercicePage({this.Add, this.programme, this.list_exercices});
 
   @override
   State<ExercicePage> createState() => _ExercicePageState();
@@ -43,12 +44,12 @@ class _ExercicePageState extends State<ExercicePage> {
     if (widget.programme != null) widget.Add = true;
   }
 
-  getexo( LoginState loginState) {
+  getexo(LoginState loginState) {
     widget.exerciceRoutes.getAll(loginState).then((exercices) {
       exercices[0].forEach((exerciseData) {
         Exercice exercice0 = Exercice.fromJson(exerciseData);
         tabTopPoly.add({
-          'nameWithDesc': '${exercice0.name}  :  ${exercice0.description}',
+          'nameWithDesc': '${exercice0.name} : ${exercice0.description}',
           'id': '${exercice0.id}',
         });
 
@@ -57,7 +58,7 @@ class _ExercicePageState extends State<ExercicePage> {
       exercices[1].forEach((exerciseData) {
         Exercice exercice1 = Exercice.fromJson(exerciseData);
         tabTopIso.add({
-          'nameWithDesc': '${exercice1.name}  :  ${exercice1.description}',
+          'nameWithDesc': '${exercice1.name} : ${exercice1.description}',
           'id': '${exercice1.id}',
         });
       });
@@ -65,7 +66,7 @@ class _ExercicePageState extends State<ExercicePage> {
       exercices[2].forEach((exerciseData) {
         Exercice exercice2 = Exercice.fromJson(exerciseData);
         tabBottomPoly.add({
-          'nameWithDesc': '${exercice2.name}  :  ${exercice2.description}',
+          'nameWithDesc': '${exercice2.name} : ${exercice2.description}',
           'id': '${exercice2.id}',
         });
       });
@@ -73,7 +74,7 @@ class _ExercicePageState extends State<ExercicePage> {
       exercices[3].forEach((exerciseData) {
         Exercice exercice3 = Exercice.fromJson(exerciseData);
         tabBottomIso.add({
-          'nameWithDesc': '${exercice3.name}  :  ${exercice3.description}',
+          'nameWithDesc': '${exercice3.name} : ${exercice3.description}',
           'id': '${exercice3.id}',
         });
       });
@@ -141,13 +142,23 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabTopPoly.map((item) {
                             return ListTile(
-                              leading: widget.Add != null && widget.Add! ? GestureDetector(
+                              title: Text(item['nameWithDesc']),
+                              leading: widget.Add != null && widget.Add! ?
+                              widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                              //widget.list_exercices != null && widget.list_exercices!.indexWhere((exercice) => exercice.startsWith(item['nameWithDesc']!)) != -1 ?
+                              GestureDetector(
+                                onTap: () {
+                                  removeExo(item);
+                                },
+                                child: Icon(Icons.remove),
+                              )
+                                  : GestureDetector(
                                 onTap: () {
                                   addExo(item);
-                                 },
+                                },
                                 child: Icon(Icons.add),
-                              ) : null,
-                              title: Text(item['nameWithDesc']),
+                              )
+                                 : SizedBox.shrink(), // Affiche null si widget.exercices est null
                             );
                           }).toList(),
                         ),
@@ -176,12 +187,21 @@ class _ExercicePageState extends State<ExercicePage> {
                           children: tabTopIso.map((item) {
                             return ListTile(
                               title: Text(item['nameWithDesc']),
-                              onTap: () {
-                                setState(() {
-                                  dropdownValue = item;
-                                  isListVisible_HautIso = false;
-                                });
-                              },
+                              leading: widget.Add != null && widget.Add! ?
+                              widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                              GestureDetector(
+                                onTap: () {
+                                  removeExo(item);
+                                },
+                                child: Icon(Icons.remove),
+                              )
+                                  : GestureDetector(
+                                onTap: () {
+                                  addExo(item);
+                                },
+                                child: Icon(Icons.add),
+                              )
+                                  : SizedBox.shrink(), // Affiche null si widget.exercices est null
                             );
                           }).toList(),
                         ),
@@ -214,12 +234,21 @@ class _ExercicePageState extends State<ExercicePage> {
                           children: tabBottomPoly.map((item) {
                             return ListTile(
                               title: Text(item['nameWithDesc']),
-                              onTap: () {
-                                setState(() {
-                                  dropdownValue = item;
-                                  isListVisible_BasPoly = false;
-                                });
-                              },
+                              leading: widget.Add != null && widget.Add! ?
+                              widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                              GestureDetector(
+                                onTap: () {
+                                  removeExo(item);
+                                },
+                                child: Icon(Icons.remove),
+                              )
+                                  : GestureDetector(
+                                onTap: () {
+                                  addExo(item);
+                                },
+                                child: Icon(Icons.add),
+                              )
+                                  : SizedBox.shrink(), // Affiche null si widget.exercices est null
                             );
                           }).toList(),
                         ),
@@ -248,12 +277,21 @@ class _ExercicePageState extends State<ExercicePage> {
                           children: tabBottomIso.map((item) {
                             return ListTile(
                               title: Text(item['nameWithDesc']),
-                              onTap: () {
-                                setState(() {
-                                  dropdownValue = item;
-                                  isListVisible_BasIso = false;
-                                });
-                              },
+                              leading: widget.Add != null && widget.Add! ?
+                              widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                              GestureDetector(
+                                onTap: () {
+                                  removeExo(item);
+                                },
+                                child: Icon(Icons.remove),
+                              )
+                                  : GestureDetector(
+                                onTap: () {
+                                  addExo(item);
+                                },
+                                child: Icon(Icons.add),
+                              )
+                                  : SizedBox.shrink(), // Affiche null si widget.exercices est null
                             );
                           }).toList(),
                         ),
@@ -273,7 +311,25 @@ class _ExercicePageState extends State<ExercicePage> {
 
   addExo(exercice){
     var token = Provider.of<LoginState>(context, listen: false).getToken();
-    var AddResult = widget.programmeRoutes.addExercice(token, widget.programme!.id!, int.parse(exercice['id']));
-    return AddResult;
+    var result = widget.programmeRoutes.addExercice(token, widget.programme!.id!, int.parse(exercice['id']));
+    if (widget.list_exercices == null) {
+      setState(() {
+        widget.list_exercices = [exercice['nameWithDesc']];
+      });
+    } else {
+      setState(() {
+        widget.list_exercices!.add(exercice['nameWithDesc']);
+      });
+    }
+    return result;
+  }
+
+  removeExo(exercice){
+    var token = Provider.of<LoginState>(context, listen: false).getToken();
+    var result = widget.programmeRoutes.removeExercice(token, widget.programme!.id!, int.parse(exercice['id']));
+    setState(() {
+      widget.list_exercices!.remove(exercice['nameWithDesc']);
+    });
+    return result;
   }
 }

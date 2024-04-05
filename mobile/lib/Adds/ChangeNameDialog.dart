@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/model/Programme.dart';
-import 'package:mobile/pages/ExercicePage.dart';
+import 'package:mobile/pages/ProgrammePage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:provider/provider.dart';
 
 
-
-AddProgDialog(BuildContext context, programmeRoutes, {String? message}) => showDialog(
+ChangeNameDialog(BuildContext context, programmeRoutes, programme_id, {String? message}) => showDialog(
   context: context,
   builder: (BuildContext context) {
-    String programName = ''; // Variable pour stocker le nom du programme
+    String newProgramName = ''; // Variable pour stocker le nom du programme
 
     return AlertDialog(
       content: Column(
@@ -17,7 +15,7 @@ AddProgDialog(BuildContext context, programmeRoutes, {String? message}) => showD
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nom du nouveau programme:',
+            'Nouveau nom du programme:',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18, // Augmenter la taille du texte
@@ -25,7 +23,7 @@ AddProgDialog(BuildContext context, programmeRoutes, {String? message}) => showD
           ),
           TextField(
             onChanged: (value) {
-              programName = value; // Mettre à jour le nom du programme lorsque l'utilisateur tape
+              newProgramName = value; // Mettre à jour le nom du programme lorsque l'utilisateur tape
             },
             decoration: InputDecoration(
               hintText: 'Entrez le nom ici',
@@ -45,15 +43,13 @@ AddProgDialog(BuildContext context, programmeRoutes, {String? message}) => showD
         ),
         ElevatedButton(
           onPressed: () {
-            Programme programme = Programme(name: programName, day: 'null', favori: false, IDUser: 6);
             var token = Provider.of<LoginState>(context, listen: false).getToken();
-            programmeRoutes.insert(token, programme).
-              then((result_prog) {
-                programme.id = result_prog;
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ExercicePage(programme: programme)));
+            programmeRoutes.patchProg(token, programme_id, "name", newProgramName).
+            then((result_prog) {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ProgrammePage()));
             });
           },
-          child: const Text('OK', style: TextStyle(fontSize: 18)), // Même taille de police que le bouton "Annuler"
+          child: const Text('OK', style: TextStyle(fontSize: 18)),
         ),
       ],
     );

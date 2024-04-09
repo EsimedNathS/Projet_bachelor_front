@@ -16,43 +16,98 @@ class ExerciceRoutes extends MyAPI {
     if (result.statusCode == 401) {
       // TODO faire un truc en cas d'erreur
     }
-    List<dynamic> jsonData = jsonDecode(result.body);
+    List<dynamic> result_jsonData = jsonDecode(result.body);
+
+
+    var result_fav = await http.get(
+      Uri.http(MyAPI.apiServ, '$userRoutes/favori'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    List<dynamic> result_fav_jsonData = jsonDecode(result_fav.body);
+
 
     final TopPoly = <dynamic>[];
     final TopIso = <dynamic>[];
     final BottomPoly = <dynamic>[];
     final BottomIso = <dynamic>[];
 
-    for (var i = 0; i < jsonData.length; i++) {
-      var data = jsonData[i];
+    for (var i = 0; i < result_jsonData.length; i++) {
+      var data = result_jsonData[i];
 
       // Accéder aux valeurs correctement en utilisant les clés
       String? groupe = data['groupe'];
       String? type = data['type'];
 
+      // Vérifie si data['id'] est contenu dans result_fav
+      bool isFavourite = false;
+      for (var favData in result_fav_jsonData) {
+        var id1 = favData['idexo'];
+        var id2 = data['id'];
+        if (favData['idexo'] == data['id']) {
+          isFavourite = true;
+          break;
+        }
+      }
+
       if (groupe == "Top" && type == "Polymusculaire") {
-        // Faire quelque chose avec les données Top/Polymusculaire
-        TopPoly.add(data);
+        TopPoly.add({...data, 'isFavourite': isFavourite});
       }
 
       if (groupe == "Top" && type == "Isolation") {
-        // Faire quelque chose avec les données Top/Isométrique
-        TopIso.add(data);
+        TopIso.add({...data, 'isFavourite': isFavourite});
       }
 
       if (groupe == "Bottom" && type == "Polymusculaire") {
-        // Faire quelque chose avec les données Bottom/Polymusculaire
-        BottomPoly.add(data);
+        BottomPoly.add({...data, 'isFavourite': isFavourite});
       }
 
       if (groupe == "Bottom" && type == "Isolation") {
-        // Faire quelque chose avec les données Bottom/Isométrique
-        BottomIso.add(data);
+        BottomIso.add({...data, 'isFavourite': isFavourite});
       }
     }
 
     result.statusCode == 200;
     return  [TopPoly, TopIso, BottomPoly, BottomIso];
+  }
+
+  Future addFavori(String token, int exercice_id) async {
+    Map<String, dynamic> values = {
+      'exercice_id': exercice_id,
+    };
+    var data = jsonEncode(values);
+    var result = await http.post(
+      Uri.http(MyAPI.apiServ, '$userRoutes/favori'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json; charset=UTF-8',
+        },
+      body: data
+    );
+    if (result.statusCode == 401) {
+      // TODO faire un truc en cas d'erreur
+    }
+    result.statusCode == 200;
+    return result.statusCode;
+  }
+
+  Future removeFavori(String token, int exercice_id) async {
+    Map<String, dynamic> values = {
+      'exercice_id': exercice_id,
+    };
+    var data = jsonEncode(values);
+    var result = await http.delete(
+        Uri.http(MyAPI.apiServ, '$userRoutes/favori'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: data
+    );
+    if (result.statusCode == 401) {
+      // TODO faire un truc en cas d'erreur
+    }
+    result.statusCode == 200;
+    return result.statusCode;
   }
 
 

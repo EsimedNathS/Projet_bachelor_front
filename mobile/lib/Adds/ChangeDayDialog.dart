@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/pages/ProgrammePage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:provider/provider.dart';
 
@@ -80,6 +81,13 @@ ChangeDayDialog(BuildContext context, programmeRoutes, programme_id, {String? me
                               style: TextStyle(fontSize: 18), // Ajuster la taille de la police
                             ),
                           ),
+                          PopupMenuItem<String>(
+                            value: "Aucune",
+                            child: Text(
+                              "Aucune",
+                              style: TextStyle(fontSize: 18), // Ajuster la taille de la police
+                            ),
+                          ),
                         ];
                       },
                       onSelected: (String value) {
@@ -108,6 +116,9 @@ ChangeDayDialog(BuildContext context, programmeRoutes, programme_id, {String? me
             TextButton(
               onPressed: () {
                 var token = Provider.of<LoginState>(context, listen: false).getToken();
+                if (_selectedDay == "Aucune") {
+                  _selectedDay = 'null';
+                }
                 programmeRoutes.patchProg(token, programme_id, "day", _selectedDay).
                 then((result_prog) {
                   if (result_prog == false){
@@ -116,6 +127,10 @@ ChangeDayDialog(BuildContext context, programmeRoutes, programme_id, {String? me
                     });
                   } else {
                     Navigator.of(context).pop(result_prog);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProgrammePage()),
+                    );
                   }
                 });
               },

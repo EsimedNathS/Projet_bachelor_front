@@ -4,18 +4,20 @@ class Exercice {
   String? description;
   String? groupe;
   String? type;
+  bool? isFavourite;
 
   Exercice({ required this.name, this.description, this.groupe, this.type });
 
-  Exercice.fromJson(Map<String, dynamic> map){
+  Exercice.fromJson(Map<dynamic, dynamic> map){
     id = map['id'];
     name = map['name'];
     description = map['description'];
     groupe = map['groupe'];
     type = map['type'];
+    isFavourite = map['isFavourite'];
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<dynamic, dynamic> toJson() => {
     'name' : name,
     'description' : description,
     'groupe' : groupe,

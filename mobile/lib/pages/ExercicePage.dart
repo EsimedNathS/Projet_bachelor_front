@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Adds/FavoriStar.dart';
 import 'package:mobile/components.dart';
 import 'package:mobile/pages/MyHomePage.dart';
 import 'package:mobile/services/ExerciceRoutes.dart';
@@ -51,6 +52,7 @@ class _ExercicePageState extends State<ExercicePage> {
         tabTopPoly.add({
           'nameWithDesc': '${exercice0.name} : ${exercice0.description}',
           'id': '${exercice0.id}',
+          'isFavourite' : exercice0.isFavourite,
         });
 
       });
@@ -60,6 +62,7 @@ class _ExercicePageState extends State<ExercicePage> {
         tabTopIso.add({
           'nameWithDesc': '${exercice1.name} : ${exercice1.description}',
           'id': '${exercice1.id}',
+          'isFavourite' : exercice1.isFavourite,
         });
       });
 
@@ -68,6 +71,7 @@ class _ExercicePageState extends State<ExercicePage> {
         tabBottomPoly.add({
           'nameWithDesc': '${exercice2.name} : ${exercice2.description}',
           'id': '${exercice2.id}',
+          'isFavourite' : exercice2.isFavourite,
         });
       });
 
@@ -76,6 +80,7 @@ class _ExercicePageState extends State<ExercicePage> {
         tabBottomIso.add({
           'nameWithDesc': '${exercice3.name} : ${exercice3.description}',
           'id': '${exercice3.id}',
+          'isFavourite' : exercice3.isFavourite,
         });
       });
       setState(() {
@@ -142,10 +147,10 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabTopPoly.map((item) {
                             return ListTile(
-                              title: Text(item['nameWithDesc']),
-                              leading: widget.Add != null && widget.Add! ?
+                              title: FavoriStar(item, widget.exerciceRoutes, context, setState),
+                              leading:
+                              widget.Add != null && widget.Add! ?
                               widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
-                              //widget.list_exercices != null && widget.list_exercices!.indexWhere((exercice) => exercice.startsWith(item['nameWithDesc']!)) != -1 ?
                               GestureDetector(
                                 onTap: () {
                                   removeExo(item);
@@ -158,7 +163,7 @@ class _ExercicePageState extends State<ExercicePage> {
                                 },
                                 child: Icon(Icons.add),
                               )
-                                 : SizedBox.shrink(), // Affiche null si widget.exercices est null
+                                  : SizedBox.shrink(), // Affiche null si widget.exercices est null
                             );
                           }).toList(),
                         ),
@@ -186,7 +191,7 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabTopIso.map((item) {
                             return ListTile(
-                              title: Text(item['nameWithDesc']),
+                              title: FavoriStar(item, widget.exerciceRoutes, context, setState),
                               leading: widget.Add != null && widget.Add! ?
                               widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
                               GestureDetector(
@@ -233,7 +238,7 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabBottomPoly.map((item) {
                             return ListTile(
-                              title: Text(item['nameWithDesc']),
+                              title: FavoriStar(item, widget.exerciceRoutes, context, setState),
                               leading: widget.Add != null && widget.Add! ?
                               widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
                               GestureDetector(
@@ -276,7 +281,7 @@ class _ExercicePageState extends State<ExercicePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: tabBottomIso.map((item) {
                             return ListTile(
-                              title: Text(item['nameWithDesc']),
+                              title: FavoriStar(item, widget.exerciceRoutes, context, setState),
                               leading: widget.Add != null && widget.Add! ?
                               widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
                               GestureDetector(

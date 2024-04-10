@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Adds/ChangeDayDialog.dart';
+import 'package:mobile/Adds/FavoriStar.dart';
 import 'package:mobile/model/Programme.dart';
+import 'package:mobile/pages/FavoriPage.dart';
 import 'package:mobile/pages/MyHomePage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:mobile/services/ProgrammeRoutes.dart';
@@ -167,11 +169,20 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                 title: Row(
                                   children: [
                                     Expanded(
-                                      child: Text(
-                                        programme['name'],
-                                        overflow: TextOverflow.ellipsis, // Gérer le débordement si nécessaire
+                                      child: Row(
+                                        children: [
+                                          FavoriStar(programme, programmeRoutes: widget.programmeRoutes, context: context, setStateCallback: setState),
+                                          SizedBox(width: 10), // Espacement entre l'étoile et le texte
+                                          Expanded(
+                                            child: Text(
+                                              programme['name'],
+                                              overflow: TextOverflow.ellipsis, // Gérer le débordement si nécessaire
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
+
                                     IconButton(
                                       icon: Icon(Icons.more_vert),
                                       onPressed: () {
@@ -266,6 +277,23 @@ class _ProgrammePageState extends State<ProgrammePage> {
                   onPressed: () => {AddProgDialog(context, widget.programmeRoutes)},
                   tooltip: 'Ajouter',
                   child: Icon(Icons.add), // Icône "plus" pour évoquer l'ajout
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: FloatingActionButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (BuildContext context) => FavoriPage()),
+                  ),
+                  tooltip: 'Accès favoris',
+                  child: Icon(
+                    Icons.star,
+                    color: Colors.red, // Couleur rouge pour l'icône
+                  ),
                 ),
               ),
             ),

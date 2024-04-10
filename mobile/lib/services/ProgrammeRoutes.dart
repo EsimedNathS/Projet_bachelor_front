@@ -48,10 +48,11 @@ class ProgrammeRoutes extends MyAPI {
     return result.statusCode;
   }
 
-  Future patchProg(token, int id_programme, String type, String patch) async {
+  Future patchProg(token, id_programme, String champ_patch, dynamic value_patch) async {
     Map<String, dynamic> values = {
       'id_programme' : id_programme,
-      type : patch,
+      'champ_patch' : champ_patch,
+      'value_patch' : value_patch,
     };
     var data = jsonEncode(values);
     var result = await http.patch(

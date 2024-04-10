@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Adds/FavoriStar.dart';
 import 'package:mobile/components.dart';
+import 'package:mobile/pages/FavoriPage.dart';
 import 'package:mobile/pages/MyHomePage.dart';
 import 'package:mobile/services/ExerciceRoutes.dart';
 import 'package:mobile/services/LoginState.dart';
@@ -104,210 +105,233 @@ class _ExercicePageState extends State<ExercicePage> {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder(
-          future: Future.value(dataLoaded),
-          builder: (context, snapshot) {
-            if (!dataLoaded ) {
-              // Attendez que les données soient chargées
-              return CircularProgressIndicator();
-            } else {
-              // Les données sont chargées, construisez le widget
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: FutureBuilder(
+              future: Future.value(dataLoaded),
+              builder: (context, snapshot) {
+                if (!dataLoaded ) {
+                  // Attendez que les données soient chargées
+                  return CircularProgressIndicator();
+                } else {
+                  // Les données sont chargées, construisez le widget
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      MyText(
-                        'Haut du corps :',
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isListVisible_HautPoly = !isListVisible_HautPoly;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.keyboard_arrow_down),
-                            SizedBox(width: 10),
-                            Text(
-                              "Polymusculaire",
-                              style: TextStyle(fontSize: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          MyText(
+                            'Haut du corps :',
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isListVisible_HautPoly = !isListVisible_HautPoly;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.keyboard_arrow_down),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Polymusculaire",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                //if (widget.Add != null && widget.Add) // Vérifier si Add est vrai
+                              ],
                             ),
-                            //if (widget.Add != null && widget.Add) // Vérifier si Add est vrai
-                          ],
-                        ),
-                      ),
-                      Visibility(
-                        visible: isListVisible_HautPoly,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: tabTopPoly.map((item) {
-                            return ListTile(
-                              title: FavoriStar(item, widget.exerciceRoutes, context, setState),
-                              leading:
-                              widget.Add != null && widget.Add! ?
-                              widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
-                              GestureDetector(
-                                onTap: () {
-                                  removeExo(item);
-                                },
-                                child: Icon(Icons.remove),
-                              )
-                                  : GestureDetector(
-                                onTap: () {
-                                  addExo(item);
-                                },
-                                child: Icon(Icons.add),
-                              )
-                                  : SizedBox.shrink(), // Affiche null si widget.exercices est null
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isListVisible_HautIso = !isListVisible_HautIso;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.keyboard_arrow_down),
-                            SizedBox(width: 10),
-                            Text(
-                              "Isolation",
-                              style: TextStyle(fontSize: 16),
+                          ),
+                          Visibility(
+                            visible: isListVisible_HautPoly,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: tabTopPoly.map((item) {
+                                return ListTile(
+                                  title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
+                                  leading:
+                                  widget.Add != null && widget.Add! ?
+                                  widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                                  GestureDetector(
+                                    onTap: () {
+                                      removeExo(item);
+                                    },
+                                    child: Icon(Icons.remove),
+                                  )
+                                      : GestureDetector(
+                                    onTap: () {
+                                      addExo(item);
+                                    },
+                                    child: Icon(Icons.add),
+                                  )
+                                      : SizedBox.shrink(), // Affiche null si widget.exercices est null
+                                );
+                              }).toList(),
                             ),
-                          ],
-                        ),
-                      ),
-                      Visibility(
-                        visible: isListVisible_HautIso,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: tabTopIso.map((item) {
-                            return ListTile(
-                              title: FavoriStar(item, widget.exerciceRoutes, context, setState),
-                              leading: widget.Add != null && widget.Add! ?
-                              widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
-                              GestureDetector(
-                                onTap: () {
-                                  removeExo(item);
-                                },
-                                child: Icon(Icons.remove),
-                              )
-                                  : GestureDetector(
-                                onTap: () {
-                                  addExo(item);
-                                },
-                                child: Icon(Icons.add),
-                              )
-                                  : SizedBox.shrink(), // Affiche null si widget.exercices est null
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      MyText(
-                        'Bas du corps :',
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isListVisible_BasPoly = !isListVisible_BasPoly;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.keyboard_arrow_down),
-                            SizedBox(width: 10),
-                            Text(
-                              "Polymusculaire",
-                              style: TextStyle(fontSize: 16),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isListVisible_HautIso = !isListVisible_HautIso;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.keyboard_arrow_down),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Isolation",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      Visibility(
-                        visible: isListVisible_BasPoly,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: tabBottomPoly.map((item) {
-                            return ListTile(
-                              title: FavoriStar(item, widget.exerciceRoutes, context, setState),
-                              leading: widget.Add != null && widget.Add! ?
-                              widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
-                              GestureDetector(
-                                onTap: () {
-                                  removeExo(item);
-                                },
-                                child: Icon(Icons.remove),
-                              )
-                                  : GestureDetector(
-                                onTap: () {
-                                  addExo(item);
-                                },
-                                child: Icon(Icons.add),
-                              )
-                                  : SizedBox.shrink(), // Affiche null si widget.exercices est null
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isListVisible_BasIso = !isListVisible_BasIso;
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Icon(Icons.keyboard_arrow_down),
-                            SizedBox(width: 10),
-                            Text(
-                              "Isolation",
-                              style: TextStyle(fontSize: 16),
+                          ),
+                          Visibility(
+                            visible: isListVisible_HautIso,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: tabTopIso.map((item) {
+                                return ListTile(
+                                  title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
+                                  leading: widget.Add != null && widget.Add! ?
+                                  widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                                  GestureDetector(
+                                    onTap: () {
+                                      removeExo(item);
+                                    },
+                                    child: Icon(Icons.remove),
+                                  )
+                                      : GestureDetector(
+                                    onTap: () {
+                                      addExo(item);
+                                    },
+                                    child: Icon(Icons.add),
+                                  )
+                                      : SizedBox.shrink(), // Affiche null si widget.exercices est null
+                                );
+                              }).toList(),
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(height: 20),
+                          MyText(
+                            'Bas du corps :',
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isListVisible_BasPoly = !isListVisible_BasPoly;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.keyboard_arrow_down),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Polymusculaire",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Visibility(
+                            visible: isListVisible_BasPoly,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: tabBottomPoly.map((item) {
+                                return ListTile(
+                                  title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
+                                  leading: widget.Add != null && widget.Add! ?
+                                  widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                                  GestureDetector(
+                                    onTap: () {
+                                      removeExo(item);
+                                    },
+                                    child: Icon(Icons.remove),
+                                  )
+                                      : GestureDetector(
+                                    onTap: () {
+                                      addExo(item);
+                                    },
+                                    child: Icon(Icons.add),
+                                  )
+                                      : SizedBox.shrink(), // Affiche null si widget.exercices est null
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isListVisible_BasIso = !isListVisible_BasIso;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Icon(Icons.keyboard_arrow_down),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Isolation",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Visibility(
+                            visible: isListVisible_BasIso,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: tabBottomIso.map((item) {
+                                return ListTile(
+                                  title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
+                                  leading: widget.Add != null && widget.Add! ?
+                                  widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                                  GestureDetector(
+                                    onTap: () {
+                                      removeExo(item);
+                                    },
+                                    child: Icon(Icons.remove),
+                                  )
+                                      : GestureDetector(
+                                    onTap: () {
+                                      addExo(item);
+                                    },
+                                    child: Icon(Icons.add),
+                                  )
+                                      : SizedBox.shrink(), // Affiche null si widget.exercices est null
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                        ],
                       ),
-                      Visibility(
-                        visible: isListVisible_BasIso,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: tabBottomIso.map((item) {
-                            return ListTile(
-                              title: FavoriStar(item, widget.exerciceRoutes, context, setState),
-                              leading: widget.Add != null && widget.Add! ?
-                              widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
-                              GestureDetector(
-                                onTap: () {
-                                  removeExo(item);
-                                },
-                                child: Icon(Icons.remove),
-                              )
-                                  : GestureDetector(
-                                onTap: () {
-                                  addExo(item);
-                                },
-                                child: Icon(Icons.add),
-                              )
-                                  : SizedBox.shrink(), // Affiche null si widget.exercices est null
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      SizedBox(height: 20),
                     ],
-                  ),
-                ],
+                  );
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: Align(
+        alignment: Alignment.bottomRight,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (BuildContext context) => FavoriPage()),
               );
-            }
-          },
+            },
+            tooltip: 'Accès favoris',
+            child: Icon(
+              Icons.star,
+              color: Colors.red, // Couleur rouge pour l'icône
+            ),
+          ),
         ),
       ),
     );

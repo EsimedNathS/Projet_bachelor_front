@@ -41,9 +41,7 @@ class ExerciceRoutes extends MyAPI {
       // Vérifie si data['id'] est contenu dans result_fav
       bool isFavourite = false;
       for (var favData in result_fav_jsonData) {
-        var id1 = favData['idexo'];
-        var id2 = data['id'];
-        if (favData['idexo'] == data['id']) {
+        if (favData['id'] == data['id']) {
           isFavourite = true;
           break;
         }
@@ -68,6 +66,19 @@ class ExerciceRoutes extends MyAPI {
 
     result.statusCode == 200;
     return  [TopPoly, TopIso, BottomPoly, BottomIso];
+  }
+
+  Future getAllFavori(LoginState loginState) async {
+    var token = loginState.getToken();
+
+    var result_fav = await http.get(
+      Uri.http(MyAPI.apiServ, '$userRoutes/favori'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    List<dynamic> result_fav_data = jsonDecode(result_fav.body);
+
+    result_fav.statusCode == 200;
+    return  result_fav_data;
   }
 
   Future addFavori(String token, int exercice_id) async {

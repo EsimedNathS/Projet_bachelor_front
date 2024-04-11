@@ -45,7 +45,7 @@ AddProgDialog(BuildContext context, programmeRoutes, {String? message}) => showD
         ),
         ElevatedButton(
           onPressed: () {
-            Programme programme = Programme(name: programName, day: 'null', favori: false, IDUser: 6);
+            Programme programme = Programme(name: programName, day: 'null', favori: false, IDUser: 1);
             var token = Provider.of<LoginState>(context, listen: false).getToken();
             programmeRoutes.insert(token, programme).
               then((result_prog) {

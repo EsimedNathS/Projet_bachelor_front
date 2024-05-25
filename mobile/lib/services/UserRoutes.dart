@@ -18,15 +18,11 @@ class UserRoutes extends MyAPI {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: data);
-    if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
+    if (result.statusCode == 402) {
+      return 402;
+    }
+      if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
   }
-
-  Future search(String login) async {
-    var result = await http.get(
-        Uri.http(MyAPI.apiServ, '$userRoutes/$login'));
-    return result.statusCode == 200;
-  }
-
 
   Future<AuthenticationResult> authenticate(String login, String password) async {
     var data = jsonEncode({ 'login' : login, 'password' : password});

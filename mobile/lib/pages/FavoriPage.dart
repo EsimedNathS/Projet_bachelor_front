@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile/pages/MyHomePage.dart';
 import 'package:mobile/services/ExerciceRoutes.dart';
 import 'package:mobile/services/LoginState.dart';
-import 'package:mobile/model/Exercice.dart';
-import 'package:mobile/model/Programme.dart';
 import 'package:mobile/services/ProgrammeRoutes.dart';
 import 'package:provider/provider.dart';
 
@@ -63,8 +61,7 @@ class _FavoriPageState extends State<FavoriPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context)
-                .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
+            Navigator.of(context).pop();
           },
         ),
       ),
@@ -75,7 +72,7 @@ class _FavoriPageState extends State<FavoriPage> {
             Column(
               children: [
                 Expanded(
-                  child: FutureBuilder(
+                  child: FutureBuilder( // Builder pour les programmes et exercices
                     future: Future.value(dataLoaded),
                     builder: (context, snapshot) {
                       if (!dataLoaded) {
@@ -85,6 +82,7 @@ class _FavoriPageState extends State<FavoriPage> {
                       } else {
                         return ListView(
                           children: [
+                            // Affichage des programmes
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
@@ -101,6 +99,7 @@ class _FavoriPageState extends State<FavoriPage> {
                                 // Add other properties as needed
                               );
                             }).toList(),
+                            // Affichage des exercices
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(

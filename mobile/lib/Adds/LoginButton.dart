@@ -7,11 +7,14 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Bouton pour le Log in
     return SizedBox(
         width: double.infinity,
         child:MyPadding(
             child: ElevatedButton(
                 onPressed: onPressed,
-                child: const MyText('Log in'))));
+                child: const MyText('Log in'))
+        )
+    );
   }
 }

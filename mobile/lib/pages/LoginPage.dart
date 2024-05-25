@@ -43,11 +43,11 @@ class _Loginpage extends State<LoginPage>{
           padding: EdgeInsets.fromLTRB(20, 200, 20, 20),
           child: Column(
              children: [
-             Text('Programed',
+             Text('Programed', // Titre
                style: TextStyle(fontSize: 40),
                textAlign: TextAlign.center,
              ),
-             TextFormField(
+             TextFormField( // Case pour entrer Login
                decoration: const InputDecoration(
                 icon: Icon(Icons.person),
                 labelText: 'Login'
@@ -57,7 +57,7 @@ class _Loginpage extends State<LoginPage>{
                autofocus: true,
                onSaved: (value) => _login = value.toString(),
              ),
-             TextFormField(
+             TextFormField( // Case pour entrer Password
                decoration: const InputDecoration(
                  icon: Icon(Icons.lock),
                  labelText: 'Password'
@@ -66,7 +66,7 @@ class _Loginpage extends State<LoginPage>{
                validator: (value) => stringNotEmptyValidator(value, 'please enter your password'),
                onSaved: (value) => _password = value.toString()
              ),
-             if (processLogin)
+             if (processLogin) // Message en cas d'erreur de connexion
                FutureBuilder(
                    future: _authResult,
                    builder: (context, snapshot) {
@@ -90,7 +90,7 @@ class _Loginpage extends State<LoginPage>{
                    })
              else
                LoginButton(onPressed: _dologin),
-              SizedBox(
+              SizedBox( // Bouton Sing in
                 width : double.infinity,
                 child: MyPadding(
                   child: ElevatedButton(
@@ -112,6 +112,7 @@ class _Loginpage extends State<LoginPage>{
   }
 
 
+  // Authentification. Si oui connection sinon message
   _dologin() async {
     if ( !_formKey.currentState!.validate() ) return;
     _formKey.currentState?.save();

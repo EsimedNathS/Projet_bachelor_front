@@ -3,6 +3,7 @@ import 'package:mobile/Adds/FavoriStar.dart';
 import 'package:mobile/components.dart';
 import 'package:mobile/pages/FavoriPage.dart';
 import 'package:mobile/pages/MyHomePage.dart';
+import 'package:mobile/pages/ProgrammePage.dart';
 import 'package:mobile/services/ExerciceRoutes.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:mobile/model/Exercice.dart';
@@ -24,7 +25,6 @@ class ExercicePage extends StatefulWidget {
 }
 
 class _ExercicePageState extends State<ExercicePage> {
-  String? dropdownValue = 'Pomme';
   bool isListVisible_HautPoly = false;
   bool isListVisible_HautIso = false;
   bool isListVisible_BasPoly = false;
@@ -36,8 +36,6 @@ class _ExercicePageState extends State<ExercicePage> {
   late List<dynamic> tabBottomIso = [];
 
   bool dataLoaded = false;
-
-  var items = ['Pomme', 'Banane', 'Fraise', 'Orange', 'Abricot', 'Melon'];
 
   @override
   void initState() {
@@ -94,14 +92,20 @@ class _ExercicePageState extends State<ExercicePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar( // Titre + bouton de retour à la page précédente
         backgroundColor: Theme.of(context).colorScheme.errorContainer,
         title: Text('Exercices'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context)
-                .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
+            if (widget.Add != null && widget.Add!){
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) => ProgrammePage()));
+            }
+            else {
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
+            }
           },
         ),
       ),
@@ -140,19 +144,20 @@ class _ExercicePageState extends State<ExercicePage> {
                                   "Polymusculaire",
                                   style: TextStyle(fontSize: 16),
                                 ),
-                                //if (widget.Add != null && widget.Add) // Vérifier si Add est vrai
                               ],
                             ),
                           ),
+                          // Liste des exercices poly du haut
                           Visibility(
                             visible: isListVisible_HautPoly,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: tabTopPoly.map((item) {
                                 return ListTile(
+                                  // Etoile des favoris
                                   title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
-                                  leading:
-                                  widget.Add != null && widget.Add! ?
+                                  // Symbole d'ajout à un programme
+                                  leading: widget.Add != null && widget.Add! ?
                                   widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
                                   GestureDetector(
                                     onTap: () {
@@ -188,13 +193,16 @@ class _ExercicePageState extends State<ExercicePage> {
                               ],
                             ),
                           ),
+                          // liste des exercices Iso du haut
                           Visibility(
                             visible: isListVisible_HautIso,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: tabTopIso.map((item) {
                                 return ListTile(
+                                  // Etoile des favoris
                                   title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
+                                  // Symbole d'ajout à un programme
                                   leading: widget.Add != null && widget.Add! ?
                                   widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
                                   GestureDetector(
@@ -235,13 +243,16 @@ class _ExercicePageState extends State<ExercicePage> {
                               ],
                             ),
                           ),
+                          // Liste des exercice Poly du bas
                           Visibility(
                             visible: isListVisible_BasPoly,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: tabBottomPoly.map((item) {
                                 return ListTile(
+                                  // Etoile des favoris
                                   title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
+                                  // Symbole d'ajout à un programme
                                   leading: widget.Add != null && widget.Add! ?
                                   widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
                                   GestureDetector(
@@ -278,13 +289,16 @@ class _ExercicePageState extends State<ExercicePage> {
                               ],
                             ),
                           ),
+                          // Liste des exercices Iso du bas
                           Visibility(
                             visible: isListVisible_BasIso,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: tabBottomIso.map((item) {
                                 return ListTile(
+                                  // Etoile des favoris
                                   title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
+                                  // Symbole d'ajout à un programme
                                   leading: widget.Add != null && widget.Add! ?
                                   widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
                                   GestureDetector(
@@ -315,6 +329,7 @@ class _ExercicePageState extends State<ExercicePage> {
           ),
         ],
       ),
+      // Bouton accès favori en bas à droite
       floatingActionButton: Align(
         alignment: Alignment.bottomRight,
         child: Padding(

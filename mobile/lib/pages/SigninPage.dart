@@ -37,6 +37,7 @@ class _Signinpage extends State<SigninPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Champ pour le login
                     TextFormField(
                       decoration: InputDecoration(
                           labelText: 'login',
@@ -46,6 +47,7 @@ class _Signinpage extends State<SigninPage> {
                       validator: (value) => stringNotEmptyValidator(value, 'Please enter your login'),
                       onSaved: (value) => _login = value.toString(),
                     ),
+                    // Champ pour le Password
                     TextFormField(
                       obscureText: true,
                       decoration: const InputDecoration(
@@ -56,6 +58,7 @@ class _Signinpage extends State<SigninPage> {
                       onChanged: (value) => _password = value.toString(),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                     ),
+                    // Champ pour la vérification Password
                     TextFormField(
                       style: defaulTextStyle,
                       obscureText: true,
@@ -74,6 +77,7 @@ class _Signinpage extends State<SigninPage> {
                     if (processSignin)
                       const Center(child: MyPadding(child: CircularProgressIndicator()))
                     else
+                      // Bouton pour Sign in
                       Padding(
                         padding: EdgeInsets.only(top: 20, bottom: 20),
                         child: SizedBox(
@@ -97,28 +101,24 @@ class _Signinpage extends State<SigninPage> {
 
     _loginError = null;
     try {
-      final exists = await widget.userRoutes.search(_login);
-      if (exists == true) {
-        setState(() {
-          _loginError = 'Login already use';
-        });
-        return ;
-      }
-    } catch(element) {}
-
-    if (context.mounted) {
-      try {
-        setState(() {
-          processSignin = true;
-        });
-        await widget.userRoutes.insert(User(login: _login, password: _password));
-        if (context.mounted) {
+      setState(() {
+        processSignin = true;
+      });
+      // On insert le User en db puis renvoie a la LoginPage
+      widget.userRoutes.insert(User(login: _login, password: _password))
+      .then((result_insert) {
+        if (result_insert == 402){
+          setState(() {
+            _loginError = 'Login already use';
+            processSignin = false;
+          });
+        } else{
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => LoginPage()));
         }
-      } catch (error) {
-        showNetworkErrorDialog(context);
-      }
+      });
+    } catch (error) {
+      showNetworkErrorDialog(context);
     }
   }
 }

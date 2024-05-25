@@ -1,8 +1,6 @@
 import 'package:mobile/model/User.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/pages/LoginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 import 'MyAPI.dart';
 
@@ -30,8 +28,6 @@ class LoginState extends ChangeNotifier{
       }
     });
   }
-  //"token" -> "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImEiLCJpYXQiOjE3MTEwMjk0NDUsImV4cCI6MTcxMTA2NTQ0NX0..."
-
 
   User getUser(){
     return _user!;

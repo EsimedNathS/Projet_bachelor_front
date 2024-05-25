@@ -3,6 +3,7 @@ import 'package:mobile/pages/ProgrammePage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:provider/provider.dart';
 
+// Pop up pour changr le jour d'un programme
 ChangeDayDialog(BuildContext context, programmeRoutes, programme_id, {String? message}) => showDialog(
   context: context,
   builder: (BuildContext context) {
@@ -31,6 +32,7 @@ ChangeDayDialog(BuildContext context, programmeRoutes, programme_id, {String? me
                   children: [
                     PopupMenuButton<String>(
                       itemBuilder: (BuildContext context) {
+                        // Liste des jours a choisir
                         return [
                           PopupMenuItem<String>(
                             value: "Lundi",

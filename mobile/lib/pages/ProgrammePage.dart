@@ -42,7 +42,7 @@ class _ProgrammePageState extends State<ProgrammePage> {
       tabDays = {}; // Initialisation de tabDays en tant que Map vide
       values.forEach((value) {
         tabProgramme.add(value);
-        if (value['day'] != 'null') {
+        if (value['day'] != null && value['day'] != 'null') {
           affiche_semaine = true;
           final day = value['day'];
           tabDays!.putIfAbsent(day, () => []);
@@ -71,8 +71,10 @@ class _ProgrammePageState extends State<ProgrammePage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context)
-                .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+                  (Route<dynamic> route) => false, // Supprime toutes les routes en dessous
+            );
           },
         ),
       ),
@@ -86,13 +88,16 @@ class _ProgrammePageState extends State<ProgrammePage> {
                   child: FutureBuilder(
                     future: Future.value(dataLoaded),
                     builder: (context, snapshot) {
+                      // Cas en attente de données
                       if (!dataLoaded) {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
+                      // Une fois les données chargées
                       } else {
                         return ListView(
                           children: [
+                            // Si il y a des pogrammes associé a des jours, on affiche les correspondants
                             if (affiche_semaine)
                               ListView.builder(
                                 shrinkWrap: true,
@@ -133,6 +138,7 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                           ),
                                         ),
                                       ),
+                                      // Affiche du nom du programme puis des exercices
                                       Visibility(
                                         visible: isListVisibleMap[day]!,
                                         child: Column(
@@ -163,6 +169,7 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                   );
                                 },
                               ),
+                            // Liste des programmes
                             ...tabProgramme.map((programme) {
                               // Créez une ExpansionTile pour chaque programme
                               return ExpansionTile(
@@ -182,12 +189,11 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                         ],
                                       ),
                                     ),
-
+                                    // Bouton pour afficher le menu de modification des exercices
                                     IconButton(
                                       icon: Icon(Icons.more_vert),
                                       onPressed: () {
-                                        // Action à effectuer lorsque vous appuyez sur l'icône
-                                        // Afficher le menu déroulant ici
+                                        // Affiche le menu déroulant ici
                                         showModalBottomSheet(
                                           context: context,
                                           builder: (context) {
@@ -274,6 +280,7 @@ class _ProgrammePageState extends State<ProgrammePage> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: FloatingActionButton(
+                  heroTag: 'addButton', // Tag unique pour le bouton "Ajouter"
                   onPressed: () => {AddProgDialog(context, widget.programmeRoutes)},
                   tooltip: 'Ajouter',
                   child: Icon(Icons.add), // Icône "plus" pour évoquer l'ajout
@@ -285,6 +292,7 @@ class _ProgrammePageState extends State<ProgrammePage> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: FloatingActionButton(
+                  heroTag: 'favoriteButton', // Tag unique pour le bouton "Accès favoris"
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (BuildContext context) => FavoriPage()),

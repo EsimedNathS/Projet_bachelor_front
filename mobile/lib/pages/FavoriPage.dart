@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/model/Programme.dart';
 import 'package:mobile/pages/MyHomePage.dart';
+import 'package:mobile/pages/ProgrammePage.dart';
 import 'package:mobile/services/ExerciceRoutes.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:mobile/services/ProgrammeRoutes.dart';
@@ -8,48 +10,53 @@ import 'package:provider/provider.dart';
 class FavoriPage extends StatefulWidget {
   final programmeRoutes = ProgrammeRoutes();
   final exerciceRoutes = ExerciceRoutes();
+  final Programme? programme;
+  List<Map<String, dynamic>>? list_exercices;
+
+  FavoriPage({Key? key, this.programme, this.list_exercices}) : super(key: key);
 
   @override
   State<FavoriPage> createState() => _FavoriPageState();
 }
 
 class _FavoriPageState extends State<FavoriPage> {
-
   Map<String, List<dynamic>>? tabFavoris;
   late List<dynamic> tabProgramme = [];
   late List<dynamic> tabExercice = [];
   bool dataLoaded = false;
+  List<String> selectedExercises = [];
 
   @override
   void initState() {
     super.initState();
-    getprog();
+    getProgAndExo();
   }
 
-  getprog() {
+  getProgAndExo() {
     Provider.of<LoginState>(context, listen: false);
     widget.programmeRoutes.getAll(Provider.of<LoginState>(context, listen: false))
         .then((values_prog) {
+      values_prog.forEach((value_prog) {
+        if (value_prog['favori'] == true) {
+          tabProgramme.add(value_prog);
+        }
+      });
 
-            values_prog.forEach((value_prog) {
-              if (value_prog['favori'] == true){
-                tabProgramme.add(value_prog);
-              }
-            });
-
-            widget.exerciceRoutes.getAllFavori(Provider.of<LoginState>(context, listen: false)).
-            then((values_exo) {
-
-              values_exo.forEach((value_exo) {
-                tabExercice.add(value_exo);
-              });
-
-              setState(() {
-                dataLoaded = true;
-              });
-            });
+      widget.exerciceRoutes.getAllFavori(Provider.of<LoginState>(context, listen: false))
+          .then((values_exo) {
+        values_exo.forEach((value_exo) {
+          tabExercice.add(value_exo);
         });
 
+        setState(() {
+          dataLoaded = true;
+        });
+      });
+    });
+  }
+
+  bool isExerciceInList(dynamic exercice) {
+    return  widget.list_exercices?.any((ex) => ex['id'].toString() == exercice['id'].toString()) ?? false;
   }
 
   @override
@@ -61,7 +68,11 @@ class _FavoriPageState extends State<FavoriPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop();
+            if (widget.list_exercices != null && widget.list_exercices!.isNotEmpty) {
+              Navigator.of(context).pop(widget.list_exercices);
+            } else {
+              Navigator.of(context).pop();
+            }
           },
         ),
       ),
@@ -72,7 +83,7 @@ class _FavoriPageState extends State<FavoriPage> {
             Column(
               children: [
                 Expanded(
-                  child: FutureBuilder( // Builder pour les programmes et exercices
+                  child: FutureBuilder(
                     future: Future.value(dataLoaded),
                     builder: (context, snapshot) {
                       if (!dataLoaded) {
@@ -94,9 +105,25 @@ class _FavoriPageState extends State<FavoriPage> {
                               ),
                             ),
                             ...tabProgramme.map((programme) {
-                              return ListTile(
+                              return ExpansionTile(
                                 title: Text(programme['name']),
-                                // Add other properties as needed
+                                children: [
+                                  if (programme['exercice'] == null)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                      child: Text('Aucun exercice trouvé.'),
+                                    )
+                                  else
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: (programme['exercice'] as List<dynamic>).map((exercice) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                                          child: Text(exercice['name']),
+                                        );
+                                      }).toList(),
+                                    ),
+                                ],
                               );
                             }).toList(),
                             // Affichage des exercices
@@ -113,7 +140,20 @@ class _FavoriPageState extends State<FavoriPage> {
                             ...tabExercice.map((exercice) {
                               return ListTile(
                                 title: Text(exercice['name']),
-                                // Add other properties as needed
+                                trailing: widget.programme != null
+                                    ? IconButton(
+                                  icon: isExerciceInList(exercice)
+                                      ? Icon(Icons.remove)
+                                      : Icon(Icons.add),
+                                  onPressed: () {
+                                    if (isExerciceInList(exercice)) {
+                                      removeExo(exercice);
+                                    } else {
+                                      addExo(exercice);
+                                    }
+                                  },
+                                )
+                                    : null,
                               );
                             }).toList(),
                           ],
@@ -128,5 +168,45 @@ class _FavoriPageState extends State<FavoriPage> {
         ),
       ),
     );
+  }
+
+  addExo(exercice) async {
+    var token = Provider.of<LoginState>(context, listen: false).getToken();
+    try {
+      // Ajouter l'exercice au programme
+      var result = await widget.programmeRoutes.addExercice(token, widget.programme!.id!, exercice['id']);
+
+      // Vérifier si l'ajout a réussi
+      if (result != null) {
+        setState(() {
+          widget.list_exercices!.add({
+            'name': exercice['name'],
+            'description': exercice['description'],
+            'id': exercice['id'],
+            'isFavourite': true
+          });
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  removeExo(exercice) async {
+    var token = Provider.of<LoginState>(context, listen: false).getToken();
+
+    try {
+      // Supprimer l'exercice du programme
+      var result = await widget.programmeRoutes.removeExercice(token, widget.programme!.id!, exercice['id']);
+
+      // Supprésion de la liste des exercices
+      if (result != null) {
+        setState(() {
+          widget.list_exercices?.removeWhere((item) => item['id'] == exercice['id']);
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }

@@ -203,17 +203,28 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                                 ListTile(
                                                   title: Text('Modifier les exercices'),
                                                   onTap: () {
-                                                    List<String> list_exercice = [];
-                                                    programme['exercice'].forEach((element) => {
-                                                      list_exercice.add('${element['name']} : ${element['description']}')
+                                                    List<Map<String, dynamic>> list_exercice = [];
+                                                    programme['exercice'].forEach((element) {
+                                                      list_exercice.add({
+                                                        'name': element['name'],
+                                                        'description': element['description'],
+                                                        'id': element['id'],
+                                                      });
                                                     });
+
                                                     Navigator.pushReplacement(
                                                       context,
-                                                      MaterialPageRoute(builder: (BuildContext context) =>
-                                                          ExercicePage(
-                                                              programme: Programme(name: programme['name'],day: programme['day'],favori: programme['favori'],IDUser: programme['IDUser'], id: programme['id']),
-                                                              list_exercices: list_exercice
-                                                          )
+                                                      MaterialPageRoute(
+                                                        builder: (BuildContext context) => ExercicePage(
+                                                          programme: Programme(
+                                                            name: programme['name'],
+                                                            day: programme['day'],
+                                                            favori: programme['favori'],
+                                                            IDUser: programme['IDUser'],
+                                                            id: programme['id'],
+                                                          ),
+                                                          list_exercices: list_exercice,
+                                                        ),
                                                       ),
                                                     );
                                                   },

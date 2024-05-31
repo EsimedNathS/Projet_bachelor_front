@@ -16,7 +16,7 @@ class ExercicePage extends StatefulWidget {
   final exerciceRoutes = ExerciceRoutes();
   bool? Add;
   final Programme? programme;
-  List<String>? list_exercices;
+  List<Map<String, dynamic>>? list_exercices;
 
   ExercicePage({this.Add, this.programme, this.list_exercices});
 
@@ -49,37 +49,40 @@ class _ExercicePageState extends State<ExercicePage> {
       exercices[0].forEach((exerciseData) {
         Exercice exercice0 = Exercice.fromJson(exerciseData);
         tabTopPoly.add({
-          'nameWithDesc': '${exercice0.name} : ${exercice0.description}',
+          'name': '${exercice0.name}',
+          'description': '${exercice0.description}',
           'id': '${exercice0.id}',
-          'isFavourite' : exercice0.isFavourite,
+          'isFavourite': exercice0.isFavourite,
         });
-
       });
 
       exercices[1].forEach((exerciseData) {
         Exercice exercice1 = Exercice.fromJson(exerciseData);
         tabTopIso.add({
-          'nameWithDesc': '${exercice1.name} : ${exercice1.description}',
+          'name': '${exercice1.name}',
+          'description': '${exercice1.description}',
           'id': '${exercice1.id}',
-          'isFavourite' : exercice1.isFavourite,
+          'isFavourite': exercice1.isFavourite,
         });
       });
 
       exercices[2].forEach((exerciseData) {
         Exercice exercice2 = Exercice.fromJson(exerciseData);
         tabBottomPoly.add({
-          'nameWithDesc': '${exercice2.name} : ${exercice2.description}',
+          'name': '${exercice2.name}',
+          'description': '${exercice2.description}',
           'id': '${exercice2.id}',
-          'isFavourite' : exercice2.isFavourite,
+          'isFavourite': exercice2.isFavourite,
         });
       });
 
       exercices[3].forEach((exerciseData) {
         Exercice exercice3 = Exercice.fromJson(exerciseData);
         tabBottomIso.add({
-          'nameWithDesc': '${exercice3.name} : ${exercice3.description}',
+          'name': '${exercice3.name}',
+          'description': '${exercice3.description}',
           'id': '${exercice3.id}',
-          'isFavourite' : exercice3.isFavourite,
+          'isFavourite': exercice3.isFavourite,
         });
       });
       setState(() {
@@ -88,6 +91,9 @@ class _ExercicePageState extends State<ExercicePage> {
     });
   }
 
+  bool isExerciceInList(dynamic exercice) {
+    return  widget.list_exercices?.any((ex) => ex['id'].toString() == exercice['id'].toString()) ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +104,10 @@ class _ExercicePageState extends State<ExercicePage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            if (widget.Add != null && widget.Add!){
+            if (widget.Add != null && widget.Add!) {
               Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(builder: (context) => ProgrammePage()));
-            }
-            else {
+            } else {
               Navigator.of(context)
                   .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
             }
@@ -116,7 +121,7 @@ class _ExercicePageState extends State<ExercicePage> {
             child: FutureBuilder(
               future: Future.value(dataLoaded),
               builder: (context, snapshot) {
-                if (!dataLoaded ) {
+                if (!dataLoaded) {
                   // Attendez que les données soient chargées
                   return CircularProgressIndicator();
                 } else {
@@ -153,29 +158,37 @@ class _ExercicePageState extends State<ExercicePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: tabTopPoly.map((item) {
-                                return ListTile(
-                                  // Etoile des favoris
-                                  title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
-                                  // Symbole d'ajout à un programme
-                                  leading: widget.Add != null && widget.Add! ?
-                                  widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
-                                  GestureDetector(
-                                    onTap: () {
-                                      removeExo(item);
-                                    },
-                                    child: Icon(Icons.remove),
-                                  )
-                                      : GestureDetector(
-                                    onTap: () {
-                                      addExo(item);
-                                    },
-                                    child: Icon(Icons.add),
-                                  )
-                                      : SizedBox.shrink(), // Affiche null si widget.exercices est null
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ListTile(
+                                      // Étoile des favoris
+                                      title:FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
+
+                                      // Symbole d'ajout à un programme
+                                      leading: widget.Add != null && widget.Add!
+                                          ? isExerciceInList(item)
+                                          ? GestureDetector(
+                                        onTap: () {
+                                          removeExo(item);
+                                        },
+                                        child: Icon(Icons.remove),
+                                      )
+                                          : GestureDetector(
+                                        onTap: () {
+                                          addExo(item);
+                                        },
+                                        child: Icon(Icons.add),
+                                      )
+                                          : SizedBox.shrink(), // Affiche null si widget.exercices est null
+                                    ),
+                                    SizedBox(height: 10), // Espacement entre chaque exercice
+                                  ],
                                 );
                               }).toList(),
                             ),
                           ),
+
                           GestureDetector(
                             onTap: () {
                               setState(() {
@@ -193,18 +206,18 @@ class _ExercicePageState extends State<ExercicePage> {
                               ],
                             ),
                           ),
-                          // liste des exercices Iso du haut
+                          // Liste des exercices Iso du haut
                           Visibility(
                             visible: isListVisible_HautIso,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: tabTopIso.map((item) {
                                 return ListTile(
-                                  // Etoile des favoris
+                                  // Étoile des favoris
                                   title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
                                   // Symbole d'ajout à un programme
                                   leading: widget.Add != null && widget.Add! ?
-                                  widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                                  isExerciceInList(item) ?
                                   GestureDetector(
                                     onTap: () {
                                       removeExo(item);
@@ -243,18 +256,18 @@ class _ExercicePageState extends State<ExercicePage> {
                               ],
                             ),
                           ),
-                          // Liste des exercice Poly du bas
+                          // Liste des exercices Poly du bas
                           Visibility(
                             visible: isListVisible_BasPoly,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: tabBottomPoly.map((item) {
                                 return ListTile(
-                                  // Etoile des favoris
+                                  // Étoile des favoris
                                   title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
                                   // Symbole d'ajout à un programme
                                   leading: widget.Add != null && widget.Add! ?
-                                  widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                                  isExerciceInList(item) ?
                                   GestureDetector(
                                     onTap: () {
                                       removeExo(item);
@@ -296,11 +309,11 @@ class _ExercicePageState extends State<ExercicePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: tabBottomIso.map((item) {
                                 return ListTile(
-                                  // Etoile des favoris
+                                  // Étoile des favoris
                                   title: FavoriStar(item, exerciceRoutes: widget.exerciceRoutes, context: context, setStateCallback: setState),
                                   // Symbole d'ajout à un programme
                                   leading: widget.Add != null && widget.Add! ?
-                                  widget.list_exercices != null && widget.list_exercices!.contains(item['nameWithDesc']) ?
+                                  isExerciceInList(item) ?
                                   GestureDetector(
                                     onTap: () {
                                       removeExo(item);
@@ -336,10 +349,20 @@ class _ExercicePageState extends State<ExercicePage> {
           padding: const EdgeInsets.all(16.0),
           child: FloatingActionButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (BuildContext context) => FavoriPage()),
-              );
+              if (widget.programme != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => FavoriPage(programme: widget.programme!, list_exercices: widget.list_exercices),
+                  ),
+                );
+              } else {
+                // Sinon, aller à la page Favori sans paramètre
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) => FavoriPage()),
+                );
+              }
             },
             tooltip: 'Accès favoris',
             child: Icon(
@@ -352,28 +375,33 @@ class _ExercicePageState extends State<ExercicePage> {
     );
   }
 
-
-  addExo(exercice){
+  addExo(exercice) async {
     var token = Provider.of<LoginState>(context, listen: false).getToken();
-    var result = widget.programmeRoutes.addExercice(token, widget.programme!.id!, int.parse(exercice['id']));
-    if (widget.list_exercices == null) {
-      setState(() {
-        widget.list_exercices = [exercice['nameWithDesc']];
+    var result = await widget.programmeRoutes.addExercice(token, widget.programme!.id!, int.parse(exercice['id']));
+    setState(() {
+      widget.list_exercices!.add({
+        'name': exercice['name'],
+        'description': exercice['description'],
+        'id': int.parse(exercice['id']),
+        'isFavourite': exercice['isFavourite']
       });
-    } else {
+    });
+    return result;
+  }
+
+  removeExo(exercice) async {
+    var token = Provider.of<LoginState>(context, listen: false).getToken();
+    var idToRemove = int.parse(exercice['id']);
+    var result = await widget.programmeRoutes.removeExercice(token, widget.programme!.id!, idToRemove);
+    if (widget.list_exercices != null) {
       setState(() {
-        widget.list_exercices!.add(exercice['nameWithDesc']);
+        widget.list_exercices?.removeWhere((item) => item['id'] == idToRemove);
       });
     }
     return result;
   }
 
-  removeExo(exercice){
-    var token = Provider.of<LoginState>(context, listen: false).getToken();
-    var result = widget.programmeRoutes.removeExercice(token, widget.programme!.id!, int.parse(exercice['id']));
-    setState(() {
-      widget.list_exercices!.remove(exercice['nameWithDesc']);
-    });
-    return result;
-  }
+
+
+
 }

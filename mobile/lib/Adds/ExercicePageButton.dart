@@ -13,7 +13,7 @@ class ExercicePageButton extends StatelessWidget {
       child: MyPadding(
         child: ElevatedButton(
           onPressed: onPressed,
-          child: const MyText('Exerices'), // Ajustez la taille de la police selon vos besoins
+          child: const MyText('Exercices'), // Ajustez la taille de la police selon vos besoins
         ),
       ),
     );

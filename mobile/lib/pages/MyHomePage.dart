@@ -97,8 +97,14 @@ class MyHomePageState extends State<MyHomePage> {
                     // Affichage du programme du jour
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20.0),
-                      child: Text(
-                        'Programme du jour: ${programme != null ? programme['name'] : 'Pas de programme prévu pour aujourd\'hui'}',
+                      child: programme != null
+                          ? Text(
+                        'Programme du jour: ${programme['name']}',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      )
+                          : Text(
+                        'Pas de programme prévu pour aujourd\'hui',
                         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),

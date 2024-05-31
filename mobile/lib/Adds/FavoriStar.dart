@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 Widget FavoriStar(Map<String, dynamic> item, {ExerciceRoutes? exerciceRoutes, ProgrammeRoutes? programmeRoutes, required BuildContext context, required Function setStateCallback}) {
   return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       GestureDetector(
         onTap: () {
@@ -56,15 +57,31 @@ Widget FavoriStar(Map<String, dynamic> item, {ExerciceRoutes? exerciceRoutes, Pr
           ],
         ),
       ),
+
       if (exerciceRoutes != null) ...[
         SizedBox(width: 10), // Espacement entre l'icône et le texte
         Expanded(
-          child: Text(
-            item['nameWithDesc'],
-            overflow: TextOverflow.ellipsis,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                item['name'],
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 4), // Espacement entre le nom et la description
+              Text(
+                item['description'],
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2, // Spécifie le nombre maximum de lignes pour la description
+              ),
+            ],
           ),
         ),
       ],
+
+
+
     ],
   );
 }

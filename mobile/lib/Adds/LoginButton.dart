@@ -13,7 +13,7 @@ class LoginButton extends StatelessWidget {
         child:MyPadding(
             child: ElevatedButton(
                 onPressed: onPressed,
-                child: const MyText('Log in'))
+                child: const MyText('Se connecter'))
         )
     );
   }

@@ -56,6 +56,7 @@ class _Loginpage extends State<LoginPage> {
                     validator: (value) => stringNotEmptyValidator(value, 'Entrez votre identifiant'),
                     autofocus: true,
                     onSaved: (value) => _login = value.toString(),
+                    maxLength: 25, // Limite de caractères
                   ),
                   SizedBox(height: 20), // Espace entre les champs
                   TextFormField(
@@ -67,6 +68,7 @@ class _Loginpage extends State<LoginPage> {
                     obscureText: true,
                     validator: (value) => stringNotEmptyValidator(value, 'Entrez votre mot de passe'),
                     onSaved: (value) => _password = value.toString(),
+                    maxLength: 25, // Limite de caractères
                   ),
                   SizedBox(height: 20), // Espace entre le champ password et le bouton
                   if (processLogin)
@@ -83,8 +85,8 @@ class _Loginpage extends State<LoginPage> {
                         if (snapshot.hasError) {
                           processLogin = false;
                           final errorMessage = snapshot.error is StatusErrorException
-                              ? "Invalid username or password"
-                              : "Network error, please try again later";
+                              ? "Mauvais Identifiant ou Mot de passe"
+                              : "Erreur réseau veuillez réessayer plus tard";
                           return Column(children: [
                             MyPadding(child: MyText(errorMessage)),
                             LoginButton(onPressed: _dologin),

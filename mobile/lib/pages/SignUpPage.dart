@@ -47,6 +47,7 @@ class _Signinpage extends State<SigninPage> {
                   ),
                   style: defaulTextStyle,
                   validator: (value) => stringNotEmptyValidator(value, 'Entrez votre identifiant'),
+                  maxLength: 25, // Limite de caractères
                   onSaved: (value) => _login = value.toString(),
                 ),
                 // Champ pour le Password
@@ -56,7 +57,18 @@ class _Signinpage extends State<SigninPage> {
                     labelText: 'Mot de passe',
                   ),
                   style: defaulTextStyle,
-                  validator: (value) => stringNotEmptyValidator(value, 'Entrez votre mot de passe'),
+                  validator: (value) {
+                    String? error = stringNotEmptyValidator(value, 'Entrez votre mot de passe');
+                    if (error != null) {
+                      return error;
+                    }
+                    error = verifyLengthValidator(value);
+                    if (error != null) {
+                      return error;
+                    }
+                    return null;
+                  },
+                  maxLength: 25, // Limite de caractères
                   onChanged: (value) => _password = value.toString(),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
@@ -68,6 +80,7 @@ class _Signinpage extends State<SigninPage> {
                     labelText: 'Mot de passe verif',
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  maxLength: 25, // Limite de caractères
                   validator: (value) {
                     if (value != _password) {
                       return 'Mot de passe différent';
@@ -113,7 +126,7 @@ class _Signinpage extends State<SigninPage> {
           .then((result_insert) {
         if (result_insert == 402) {
           setState(() {
-            _loginError = 'Login already use';
+            _loginError = 'Identifiant déjà utilisé';
             processSignin = false;
           });
         } else {

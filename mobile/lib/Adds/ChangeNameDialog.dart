@@ -27,7 +27,9 @@ ChangeNameDialog(BuildContext context, programmeRoutes, programme_id, {String? m
             },
             decoration: InputDecoration(
               hintText: 'Entrez le nom ici',
+              counterText: '', // Cache le compteur de caractères par défaut
             ),
+          maxLength: 30, // Limite de caractères à 30
           ),
         ],
       ),

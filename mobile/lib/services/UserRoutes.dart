@@ -13,7 +13,7 @@ class UserRoutes extends MyAPI {
   Future insert(User user) async {
     var data = jsonEncode(user);
     var result = await http.post(
-        Uri.http(MyAPI.apiServ, '$userRoutes'),
+        Uri.https(MyAPI.apiServ, '$userRoutes'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -26,7 +26,7 @@ class UserRoutes extends MyAPI {
 
   Future<AuthenticationResult> authenticate(String login, String password) async {
     var data = jsonEncode({ 'login' : login, 'password' : password});
-    var result = await http.post(Uri.http(MyAPI.apiServ, '$userRoutes/authenticate'),
+    var result = await http.post(Uri.https(MyAPI.apiServ, '$userRoutes/authenticate'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -44,7 +44,7 @@ class UserRoutes extends MyAPI {
       try {
         // Envoyer une requête à l'API pour vérifier la validité du token
         final response = await http.get(
-          Uri.http(MyAPI.apiServ, '/verifyToken'),
+          Uri.https(MyAPI.apiServ, '/verifyToken'),
           headers: {'Authorization': 'Bearer $token'},
         );
         if (response.statusCode == 200) {

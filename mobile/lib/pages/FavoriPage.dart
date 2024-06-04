@@ -179,11 +179,19 @@ class _FavoriPageState extends State<FavoriPage> {
       // Vérifier si l'ajout a réussi
       if (result != null) {
         setState(() {
+          //On ajoute à la liste des exercices
           widget.list_exercices!.add({
             'name': exercice['name'],
             'description': exercice['description'],
             'id': exercice['id'],
             'isFavourite': true
+          });
+
+          // On modifie si jamais le programme est dans les favoris
+          tabProgramme.forEach((prog) {
+            if (prog['id'] == widget.programme!.id!){
+              prog['exercice'].add(exercice);
+            }
           });
         });
       }
@@ -203,6 +211,13 @@ class _FavoriPageState extends State<FavoriPage> {
       if (result != null) {
         setState(() {
           widget.list_exercices?.removeWhere((item) => item['id'] == exercice['id']);
+
+          // On modifie si jamais le programme est dans les favoris
+          tabProgramme.forEach((prog) {
+            if (prog['id'] == widget.programme!.id!){
+              prog['exercice'].remove(exercice);
+            }
+          });
         });
       }
     } catch (e) {

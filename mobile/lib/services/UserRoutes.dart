@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:mobile/components.dart';
 import 'package:mobile/model/User.dart';
 import 'package:mobile/services/MyAPI.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +22,9 @@ class UserRoutes extends MyAPI {
     if (result.statusCode == 402) {
       return 402;
     }
-      if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
+    if (result.statusCode == 500) {
+      throw NetworkException();
+    }
   }
 
   Future<AuthenticationResult> authenticate(String login, String password) async {
@@ -31,7 +34,12 @@ class UserRoutes extends MyAPI {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: data);
-    if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
+    if (result.statusCode == 500) {
+      throw NetworkException();
+    }
+    if (result.statusCode == 401) {
+      return showTokenErrorDialog("Erreur lors de l'autehntification veuillez réeassayer");
+    }
     final Map<String, dynamic> datas = jsonDecode(result.body);
     return AuthenticationResult.fromMap(datas);
   }
@@ -41,23 +49,22 @@ class UserRoutes extends MyAPI {
     var token = prefs.getString('token');
     if ( token != null) {
 
-      try {
-        // Envoyer une requête à l'API pour vérifier la validité du token
-        final response = await http.get(
-          Uri.https(MyAPI.apiServ, '/verifyToken'),
-          headers: {'Authorization': 'Bearer $token'},
-        );
-        if (response.statusCode == 200) {
-          return 1;
-        }
-        if (response.statusCode == 401) {
-          return 2;
-        }
-        if (response.statusCode == 402) {
-          return 3;
-        }
-      } catch (error) {
-        print('Erreur lors de la vérification du token: $error');
+      // Envoyer une requête à l'API pour vérifier la validité du token
+      final response = await http.get(
+        Uri.https(MyAPI.apiServ, '/verifyToken'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+      if (response.statusCode == 200) {
+        return 1;
+      }
+      if (response.statusCode == 401) {
+        return 2;
+      }
+      if (response.statusCode == 402) {
+        return 3;
+      }
+      if (response.statusCode == 500) {
+        throw NetworkException();
       }
     }
     return 2;

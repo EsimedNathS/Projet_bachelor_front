@@ -29,7 +29,7 @@ class _Signinpage extends State<SigninPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Enregistrement'),
+        title: Text('Inscription'),
       ),
       body: SingleChildScrollView( // Ajout de SingleChildScrollView
         child: Form(
@@ -133,8 +133,11 @@ class _Signinpage extends State<SigninPage> {
           widget.userRoutes.authenticate(_login, _password).then((authResult) {
             Provider.of<LoginState>(context, listen: false).setToken(authResult.token);
             Provider.of<LoginState>(context, listen: false).setUser(User(login: _login, password: _password));
-            Navigator.of(context)
-                .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => MyHomePage()),
+                  (Route<dynamic> route) => false,
+            );
+
           });
         }
       });

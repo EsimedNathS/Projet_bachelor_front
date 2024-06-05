@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Adds/ChangeDayDialog.dart';
+import 'package:mobile/Adds/ConfirmationDialog.dart';
 import 'package:mobile/Adds/FavoriStar.dart';
 import 'package:mobile/model/Programme.dart';
 import 'package:mobile/pages/FavoriPage.dart';
@@ -33,13 +34,17 @@ class _ProgrammePageState extends State<ProgrammePage> {
     getprog();
   }
 
-
   getprog() {
+    setState(() {
+      dataLoaded = false; // Indicateur de chargement
+    });
+
     Provider.of<LoginState>(context, listen: false);
     widget.programmeRoutes
         .getAll(Provider.of<LoginState>(context, listen: false))
         .then((values) {
       tabDays = {}; // Initialisation de tabDays en tant que Map vide
+      tabProgramme = []; // Réinitialisation de tabProgramme
       values.forEach((value) {
         tabProgramme.add(value);
         if (value['day'] != null && value['day'] != 'null') {
@@ -93,7 +98,7 @@ class _ProgrammePageState extends State<ProgrammePage> {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
-                      // Une fois les données chargées
+                        // Une fois les données chargées
                       } else {
                         return ListView(
                           children: [
@@ -184,6 +189,11 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                             child: Text(
                                               programme['name'],
                                               overflow: TextOverflow.ellipsis, // Gérer le débordement si nécessaire
+                                              maxLines: 2, // Limite le texte à 2 lignes
+                                              softWrap: true, // Permet le retour à la ligne
+                                              style: TextStyle(
+                                                overflow: TextOverflow.visible, // Permet d'afficher le texte sans ellipses
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -247,8 +257,12 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                                     'Supprimer le programme',
                                                     style: TextStyle(color: Colors.red),
                                                   ),
-                                                  onTap: () {
-                                                    DeleteProg(programme['id']);
+                                                  onTap: () async {
+                                                    bool confirm = await ConfirmationDialog(context);
+                                                    if (confirm) {
+                                                      DeleteProg(programme['id']);
+                                                      Navigator.pop(context);
+                                                    }
                                                   },
                                                 ),
                                               ],
@@ -276,7 +290,7 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                     ),
                                 ],
                               );
-                            }).toList(),
+                            }).toList()
                           ],
                         );
                       }
@@ -322,13 +336,11 @@ class _ProgrammePageState extends State<ProgrammePage> {
     );
   }
 
-  DeleteProg(programme_id){
+  DeleteProg(programme_id) {
     var loginState = Provider.of<LoginState>(context, listen: false);
-    var token = Provider.of<LoginState>(context, listen: false).getToken();
-    widget.programmeRoutes.delete(token, programme_id);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) => ProgrammePage()),
-    );
+    var token = loginState.getToken();
+    widget.programmeRoutes.delete(token, programme_id).then((_) {
+      getprog(); // Recharge les données après la suppression
+    });
   }
 }

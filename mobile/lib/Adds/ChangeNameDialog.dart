@@ -3,7 +3,6 @@ import 'package:mobile/pages/ProgrammePage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:provider/provider.dart';
 
-
 ChangeNameDialog(BuildContext context, programmeRoutes, programme_id, {String? message}) => showDialog(
   context: context,
   builder: (BuildContext context) {
@@ -29,29 +28,33 @@ ChangeNameDialog(BuildContext context, programmeRoutes, programme_id, {String? m
               hintText: 'Entrez le nom ici',
               counterText: '', // Cache le compteur de caractères par défaut
             ),
-          maxLength: 30, // Limite de caractères à 30
+            maxLength: 40, // Limite de caractères à 40
           ),
         ],
       ),
       actions: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Fermer le dialogue
-          },
-          child: Text(
-            'Annuler',
-            style: TextStyle(fontSize: 18), // Même taille de police que le bouton "OK"
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            var token = Provider.of<LoginState>(context, listen: false).getToken();
-            programmeRoutes.patchProg(token, programme_id, "name", newProgramName).
-            then((result_prog) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ProgrammePage()));
-            });
-          },
-          child: const Text('OK', style: TextStyle(fontSize: 18)),
+        Row(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fermer le dialogue
+              },
+              child: Text(
+                'Annuler',
+                style: TextStyle(fontSize: 18), // Même taille de police que le bouton "OK"
+              ),
+            ),
+            Spacer(), // Ajoute un espace flexible entre les boutons
+            ElevatedButton(
+              onPressed: () {
+                var token = Provider.of<LoginState>(context, listen: false).getToken();
+                programmeRoutes.patchProg(token, programme_id, "name", newProgramName).then((result_prog) {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ProgrammePage()));
+                });
+              },
+              child: const Text('OK', style: TextStyle(fontSize: 18)),
+            ),
+          ],
         ),
       ],
     );

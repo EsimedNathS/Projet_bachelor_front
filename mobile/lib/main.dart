@@ -2,18 +2,28 @@ import 'package:mobile/pages/MyHomePage.dart';
 import 'package:mobile/pages/LoginPage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile/services/MyAPI.dart';
 import 'package:mobile/services/UserRoutes.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/components.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => LoginState(),
-      lazy: false,
-      child: MyApp(),
-    )
-  );
+  try{
+    runApp(
+        ChangeNotifierProvider(
+          create: (context) => LoginState(),
+          lazy: false,
+          child: MyApp(),
+        )
+    );
+  }
+  on TokenInvalidExcepetion{
+    showTokenErrorDialog;
+  }
+  on NetworkException{
+    showNetworkErrorDialog;
+  }
+
 }
 
 class MyApp extends StatefulWidget{

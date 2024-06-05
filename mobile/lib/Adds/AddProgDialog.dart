@@ -34,27 +34,32 @@ AddProgDialog(BuildContext context, programmeRoutes, {String? message}) => showD
         ],
       ),
       actions: [
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Fermer le dialogue
-          },
-          child: Text(
-            'Annuler',
-            style: TextStyle(fontSize: 18), // Même taille de police que le bouton "OK"
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Programme programme = Programme(name: programName, day: 'null', favori: false, IDUser: 1);
-            var token = Provider.of<LoginState>(context, listen: false).getToken();
-            programmeRoutes.insert(token, programme).
-              then((result_prog) {
-                programme.id = result_prog;
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ExercicePage(programme: programme)));
-            });
-          },
-          child: const Text('OK', style: TextStyle(fontSize: 18)), // Même taille de police que le bouton "Annuler"
-        ),
+        Row(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Fermer le dialogue
+              },
+              child: Text(
+                'Annuler',
+                style: TextStyle(fontSize: 18), // Même taille de police que le bouton "OK"
+              ),
+            ),
+            Spacer(),
+            ElevatedButton(
+              onPressed: () {
+                Programme programme = Programme(name: programName, day: 'null', favori: false, IDUser: 1);
+                var token = Provider.of<LoginState>(context, listen: false).getToken();
+                programmeRoutes.insert(token, programme).
+                then((result_prog) {
+                  programme.id = result_prog;
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ExercicePage(programme: programme)));
+                });
+              },
+              child: const Text('OK', style: TextStyle(fontSize: 18)), // Même taille de police que le bouton "Annuler"
+            ),
+          ],
+        )
       ],
     );
   },

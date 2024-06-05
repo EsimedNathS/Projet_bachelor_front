@@ -3,7 +3,7 @@ import 'package:mobile/pages/ProgrammePage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:provider/provider.dart';
 
-// Pop up pour changr le jour d'un programme
+// Pop up pour changer le jour d'un programme
 ChangeDayDialog(BuildContext context, programmeRoutes, programme_id, {String? message}) => showDialog(
   context: context,
   builder: (BuildContext context) {
@@ -32,7 +32,7 @@ ChangeDayDialog(BuildContext context, programmeRoutes, programme_id, {String? me
                   children: [
                     PopupMenuButton<String>(
                       itemBuilder: (BuildContext context) {
-                        // Liste des jours a choisir
+                        // Liste des jours à choisir
                         return [
                           PopupMenuItem<String>(
                             value: "Lundi",
@@ -115,34 +115,44 @@ ChangeDayDialog(BuildContext context, programmeRoutes, programme_id, {String? me
             ],
           ),
           actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                var token = Provider.of<LoginState>(context, listen: false).getToken();
-                if (_selectedDay == "Aucune") {
-                  _selectedDay = 'null';
-                }
-                programmeRoutes.patchProg(token, programme_id, "day", _selectedDay).
-                then((result_prog) {
-                  if (result_prog == false){
-                    setState(() {
-                      allocated = true;
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    'Annuler',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+                Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    var token = Provider.of<LoginState>(context, listen: false).getToken();
+                    if (_selectedDay == "Aucune") {
+                      _selectedDay = 'null';
+                    }
+                    programmeRoutes.patchProg(token, programme_id, "day", _selectedDay).then((result_prog) {
+                      if (result_prog == false) {
+                        setState(() {
+                          allocated = true;
+                        });
+                      } else {
+                        Navigator.of(context).pop(result_prog);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => ProgrammePage()),
+                        );
+                      }
                     });
-                  } else {
-                    Navigator.of(context).pop(result_prog);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProgrammePage()),
-                    );
-                  }
-                });
-              },
-              child: Text('Valider'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Annuler'),
+                  },
+                  child: Text(
+                    'Valider',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
             ),
           ],
         );

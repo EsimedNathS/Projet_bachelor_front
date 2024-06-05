@@ -14,7 +14,10 @@ class ExerciceRoutes extends MyAPI {
       headers: {'Authorization': 'Bearer $token'},
     );
     if (result.statusCode == 401) {
-      // TODO faire un truc en cas d'erreur
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
     }
     List<dynamic> result_jsonData = jsonDecode(result.body);
 
@@ -75,6 +78,12 @@ class ExerciceRoutes extends MyAPI {
       Uri.https(MyAPI.apiServ, '$userRoutes/favori'),
       headers: {'Authorization': 'Bearer $token'},
     );
+    if (result_fav.statusCode == 401) {
+      throw TokenInvalidExcepetion();
+    }
+    if (result_fav.statusCode == 500) {
+      throw NetworkException();
+    }
     List<dynamic> result_fav_data = jsonDecode(result_fav.body);
 
     result_fav.statusCode == 200;
@@ -95,7 +104,10 @@ class ExerciceRoutes extends MyAPI {
       body: data
     );
     if (result.statusCode == 401) {
-      // TODO faire un truc en cas d'erreur
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
     }
     result.statusCode == 200;
     return result.statusCode;
@@ -115,7 +127,10 @@ class ExerciceRoutes extends MyAPI {
         body: data
     );
     if (result.statusCode == 401) {
-      // TODO faire un truc en cas d'erreur
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
     }
     result.statusCode == 200;
     return result.statusCode;

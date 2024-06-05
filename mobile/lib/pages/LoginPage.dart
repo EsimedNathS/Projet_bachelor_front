@@ -54,7 +54,6 @@ class _Loginpage extends State<LoginPage> {
                     ),
                     style: defaulTextStyle,
                     validator: (value) => stringNotEmptyValidator(value, 'Entrez votre identifiant'),
-                    autofocus: true,
                     onSaved: (value) => _login = value.toString(),
                     maxLength: 25, // Limite de caractères
                   ),

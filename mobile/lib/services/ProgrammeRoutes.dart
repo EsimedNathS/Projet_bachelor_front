@@ -15,7 +15,10 @@ class ProgrammeRoutes extends MyAPI {
       headers: {'Authorization': 'Bearer $token'},
     );
     if (result.statusCode == 401) {
-      // TODO faire un truc en caq d'erreur
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
     }
   final programme_data = jsonDecode(result.body);
 
@@ -32,7 +35,12 @@ class ProgrammeRoutes extends MyAPI {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: data);
-    if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
+    if (result.statusCode == 401) {
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
+    }
     Map<String, dynamic> data_result = jsonDecode(result.body);
     var id_result = data_result['id'];
     return id_result;
@@ -44,7 +52,12 @@ class ProgrammeRoutes extends MyAPI {
         headers: <String, String>{
           'Authorization': 'Bearer $token',
         });
-    if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
+    if (result.statusCode == 401) {
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
+    }
     return result.statusCode;
   }
 
@@ -62,6 +75,12 @@ class ProgrammeRoutes extends MyAPI {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: data);
+    if (result.statusCode == 401) {
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
+    }
     if (result.statusCode == 403) return false;
     if (result.statusCode != 200) throw StatusErrorException(result.statusCode);
     return result.statusCode;
@@ -82,7 +101,10 @@ class ProgrammeRoutes extends MyAPI {
       body: data
     );
     if (result.statusCode == 401) {
-      // TODO faire quelque chose en cas d'erreur
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
     }
     return result.body;
   }
@@ -102,7 +124,10 @@ class ProgrammeRoutes extends MyAPI {
         body: data
     );
     if (result.statusCode == 401) {
-      // TODO faire quelque chose en cas d'erreur
+      throw TokenInvalidExcepetion();
+    }
+    if (result.statusCode == 500) {
+      throw NetworkException();
     }
     return result.body;
   }

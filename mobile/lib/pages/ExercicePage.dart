@@ -358,13 +358,15 @@ class _ExercicePageState extends State<ExercicePage> {
     );
   }
 
+  /*
   addExo(exercice) async {
     var token = Provider.of<LoginState>(context, listen: false).getToken();
     var result = await widget.programmeRoutes.addExercice(token, widget.programme!.id!, int.parse(exercice['id']));
+    if (widget.list_exercices == null) {
+      widget.list_exercices = [];
+    }
+    var lenght = widget.list_exercices!.length;
     setState(() {
-      if (widget.list_exercices == null) {
-        widget.list_exercices = [];
-      }
       widget.list_exercices!.add({
         'name': exercice['name'],
         'description': exercice['description'],
@@ -374,6 +376,63 @@ class _ExercicePageState extends State<ExercicePage> {
     });
     return result;
   }
+
+   */
+
+  addExo(exercice) async {
+    var token = Provider.of<LoginState>(context, listen: false).getToken();
+
+    // Vérifiez la longueur de la liste des exercices
+    if (widget.list_exercices == null) {
+      widget.list_exercices = [];
+    }
+
+    int length = widget.list_exercices!.length;
+
+    if (length >= 8) {
+      // Affichez un message d'erreur si la longueur dépasse 8
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              'Attention',
+            ),
+            content: Text(
+              'Vous ne pouvez pas ajouter plus de 8 exercices au programme',
+              style: TextStyle(fontSize: 18), // Texte plus grand
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fermer le dialogue
+                },
+                child: Text(
+                  'OK',
+                  style: TextStyle(fontSize: 18), // Texte du bouton "OK"
+                ),
+              ),
+            ],
+          );
+        },
+      );
+      return; // Arrêtez l'exécution si la limite est dépassée
+    }
+
+    var result = await widget.programmeRoutes.addExercice(token, widget.programme!.id!, int.parse(exercice['id']));
+
+    setState(() {
+      widget.list_exercices!.add({
+        'name': exercice['name'],
+        'description': exercice['description'],
+        'id': int.parse(exercice['id']),
+        'isFavourite': exercice['isFavourite']
+      });
+    });
+
+    return result;
+  }
+
 
   removeExo(exercice) async {
     var token = Provider.of<LoginState>(context, listen: false).getToken();

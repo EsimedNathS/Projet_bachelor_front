@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-Future<bool> ConfirmationDialog(BuildContext context) {
+Future<bool> ConfirmationDialog(BuildContext context, message) {
   return showDialog<bool>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(
-          'Voulez-vous vraiment supprimer ce programme?',
+          message,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,

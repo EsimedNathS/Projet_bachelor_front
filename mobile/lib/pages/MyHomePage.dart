@@ -1,9 +1,11 @@
+import 'package:mobile/Adds/ConfirmationDialog.dart';
 import 'package:mobile/components.dart';
 import 'package:mobile/model/Programme.dart';
 import 'package:mobile/pages/LoginPage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile/services/ProgrammeRoutes.dart';
+import 'package:mobile/services/UserRoutes.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/Adds/LogoutButton.dart';
 import 'package:mobile/Adds/ExercicePageButton.dart';
@@ -16,6 +18,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 class MyHomePage extends StatefulWidget{
   final programmeRoutes = ProgrammeRoutes();
+  final userRoutes = UserRoutes();
 
   @override
   State<MyHomePage> createState() => MyHomePageState();
@@ -67,16 +70,76 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( // Barre du haut avec date et Log out
+      appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
         actions: [
-          LogoutButton(onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => LoginPage()),
-            );
-          }),
+          PopupMenuButton<String>(
+            onSelected: (String value) async {
+              switch (value) {
+                case 'logout':
+                  bool confirm = await ConfirmationDialog(context, 'Voulez-vous vraiment vous déconnecter?');
+                  if (confirm) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                          (Route<dynamic> route) => false, // Supprime toutes les routes en dessous
+                    );
+                    Provider.of<LoginState>(context, listen: false).disconnected();
+                  }
+                  break;
+                case 'delete':
+                 // _deleteUser(context);
+                  bool confirm = await ConfirmationDialog(context, 'Voulez-vous vraiment supprimer cet utilisateur?');
+                  if (confirm) {
+                    DeleteUser();
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                          (Route<
+                          dynamic> route) => false, // Supprime toutes les routes en dessous
+                    );
+                    Provider.of<LoginState>(context, listen: false).disconnected();
+                  }
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, color: Theme.of(context).colorScheme.inverseSurface),
+                      SizedBox(width: 8.0),
+                      Text(
+                        'Se déconnecter',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.inverseSurface,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      Icon(Icons.delete, color: Colors.red),
+                      SizedBox(width: 8.0),
+                      Text(
+                        'Supprimer l\'utilisateur',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
+              ];
+            },
+            icon: Icon(Icons.more_vert),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            ),
+          ),
         ],
       ),
       body: Stack(
@@ -176,5 +239,13 @@ class MyHomePageState extends State<MyHomePage> {
         ],
       ),
     );
+  }
+
+  DeleteUser() {
+    var loginState = Provider.of<LoginState>(context, listen: false);
+    var token = loginState.getToken();
+    widget.userRoutes.delete(token).then((_) {
+      getprog(); // Recharge les données après la suppression
+    });
   }
 }

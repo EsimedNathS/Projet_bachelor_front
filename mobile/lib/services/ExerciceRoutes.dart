@@ -10,7 +10,7 @@ class ExerciceRoutes extends MyAPI {
   Future getAll(LoginState loginState) async {
     var token = loginState.getToken();
     var result = await http.get(
-      Uri.https(MyAPI.apiServ, '$userRoutes'),
+      Uri.http(MyAPI.apiServ, '$userRoutes'),
       headers: {'Authorization': 'Bearer $token'},
     );
     if (result.statusCode == 401) {
@@ -23,7 +23,7 @@ class ExerciceRoutes extends MyAPI {
 
 
     var result_fav = await http.get(
-      Uri.https(MyAPI.apiServ, '$userRoutes/favori'),
+      Uri.http(MyAPI.apiServ, '$userRoutes/favori'),
       headers: {'Authorization': 'Bearer $token'},
     );
     List<dynamic> result_fav_jsonData = jsonDecode(result_fav.body);
@@ -75,7 +75,7 @@ class ExerciceRoutes extends MyAPI {
     var token = loginState.getToken();
 
     var result_fav = await http.get(
-      Uri.https(MyAPI.apiServ, '$userRoutes/favori'),
+      Uri.http(MyAPI.apiServ, '$userRoutes/favori'),
       headers: {'Authorization': 'Bearer $token'},
     );
     if (result_fav.statusCode == 401) {
@@ -96,7 +96,7 @@ class ExerciceRoutes extends MyAPI {
     };
     var data = jsonEncode(values);
     var result = await http.post(
-        Uri.https(MyAPI.apiServ, '$userRoutes/favori'),
+        Uri.http(MyAPI.apiServ, '$userRoutes/favori'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8',
@@ -119,7 +119,7 @@ class ExerciceRoutes extends MyAPI {
     };
     var data = jsonEncode(values);
     var result = await http.delete(
-        Uri.https(MyAPI.apiServ, '$userRoutes/favori'),
+        Uri.http(MyAPI.apiServ, '$userRoutes/favori'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json; charset=UTF-8',

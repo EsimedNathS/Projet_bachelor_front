@@ -258,7 +258,7 @@ class _ProgrammePageState extends State<ProgrammePage> {
                                                     style: TextStyle(color: Colors.red),
                                                   ),
                                                   onTap: () async {
-                                                    bool confirm = await ConfirmationDialog(context);
+                                                    bool confirm = await ConfirmationDialog(context, 'Voulez-vous vraiment supprimer ce programme?');
                                                     if (confirm) {
                                                       DeleteProg(programme['id']);
                                                       Navigator.pop(context);

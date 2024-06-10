@@ -11,7 +11,7 @@ class ProgrammeRoutes extends MyAPI {
   Future getAll(LoginState loginState) async {
     var token = loginState.getToken();
     var result = await http.get(
-      Uri.https(MyAPI.apiServ, '$userRoutes'),
+      Uri.http(MyAPI.apiServ, '$userRoutes'),
       headers: {'Authorization': 'Bearer $token'},
     );
     if (result.statusCode == 401) {
@@ -29,7 +29,7 @@ class ProgrammeRoutes extends MyAPI {
   Future insert(token, Programme programme) async {
     var data = jsonEncode(programme);
     var result = await http.post(
-        Uri.https(MyAPI.apiServ, '$userRoutes'),
+        Uri.http(MyAPI.apiServ, '$userRoutes'),
         headers: <String, String>{
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -48,7 +48,7 @@ class ProgrammeRoutes extends MyAPI {
 
   Future delete(token, int programme_id) async {
     var result = await http.delete(
-        Uri.https(MyAPI.apiServ, '$userRoutes/$programme_id'),
+        Uri.http(MyAPI.apiServ, '$userRoutes/$programme_id'),
         headers: <String, String>{
           'Authorization': 'Bearer $token',
         });
@@ -69,7 +69,7 @@ class ProgrammeRoutes extends MyAPI {
     };
     var data = jsonEncode(values);
     var result = await http.patch(
-        Uri.https(MyAPI.apiServ, '$userRoutes'),
+        Uri.http(MyAPI.apiServ, '$userRoutes'),
         headers: <String, String>{
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json; charset=UTF-8',
@@ -93,7 +93,7 @@ class ProgrammeRoutes extends MyAPI {
     };
     var data = jsonEncode(values);
     var result = await http.post(
-        Uri.https(MyAPI.apiServ, '${userRoutes}/addexercice'),
+        Uri.http(MyAPI.apiServ, '${userRoutes}/addexercice'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8',
@@ -116,7 +116,7 @@ class ProgrammeRoutes extends MyAPI {
     };
     var data = jsonEncode(values);
     var result = await http.delete(
-        Uri.https(MyAPI.apiServ, '${userRoutes}/removeexercice'),
+        Uri.http(MyAPI.apiServ, '${userRoutes}/removeexercice'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json; charset=UTF-8',

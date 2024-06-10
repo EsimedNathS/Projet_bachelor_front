@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/Adds/PasswordField.dart';
 import 'package:mobile/components.dart';
 import 'package:mobile/consts.dart';
 import 'package:mobile/pages/MyHomePage.dart';
@@ -44,6 +45,7 @@ class _Signinpage extends State<SigninPage> {
                   decoration: InputDecoration(
                     labelText: 'Identifiant',
                     errorText: _loginError,
+                    icon: Icon(Icons.person),
                   ),
                   style: defaulTextStyle,
                   validator: (value) => stringNotEmptyValidator(value, 'Entrez votre identifiant'),
@@ -51,12 +53,8 @@ class _Signinpage extends State<SigninPage> {
                   onSaved: (value) => _login = value.toString(),
                 ),
                 // Champ pour le Password
-                TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Mot de passe',
-                  ),
-                  style: defaulTextStyle,
+                PasswordField(
+                  defaulTextStyle: defaulTextStyle,
                   validator: (value) {
                     String? error = stringNotEmptyValidator(value, 'Entrez votre mot de passe');
                     if (error != null) {
@@ -68,19 +66,12 @@ class _Signinpage extends State<SigninPage> {
                     }
                     return null;
                   },
-                  maxLength: 25, // Limite de caractères
-                  onChanged: (value) => _password = value.toString(),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  onSaved: (value) => _password = value.toString(),
+                  onChanged: (value) => _password = value,
                 ),
                 // Champ pour la vérification Password
-                TextFormField(
-                  style: defaulTextStyle,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Mot de passe verif',
-                  ),
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  maxLength: 25, // Limite de caractères
+                PasswordField(
+                  defaulTextStyle: defaulTextStyle,
                   validator: (value) {
                     if (value != _password) {
                       return 'Mot de passe différent';
@@ -88,7 +79,9 @@ class _Signinpage extends State<SigninPage> {
                     if (value == null || value.trim().isEmpty) {
                       return 'Entrez votre mot de passe';
                     }
+                    return null;
                   },
+                  onSaved: (value) {},
                 ),
                 if (processSignin)
                   const Center(child: MyPadding(child: CircularProgressIndicator()))

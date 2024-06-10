@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/Adds/LoginButton.dart';
+import 'package:mobile/Adds/PasswordField.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:mobile/components.dart';
 import 'package:mobile/consts.dart';
@@ -58,16 +59,10 @@ class _Loginpage extends State<LoginPage> {
                     maxLength: 25, // Limite de caractères
                   ),
                   SizedBox(height: 20), // Espace entre les champs
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.lock),
-                      labelText: 'Mot de passe',
-                    ),
-                    style: defaulTextStyle,
-                    obscureText: true,
+                  PasswordField(
+                    defaulTextStyle: defaulTextStyle,
                     validator: (value) => stringNotEmptyValidator(value, 'Entrez votre mot de passe'),
                     onSaved: (value) => _password = value.toString(),
-                    maxLength: 25, // Limite de caractères
                   ),
                   SizedBox(height: 20), // Espace entre le champ password et le bouton
                   if (processLogin)
@@ -84,12 +79,22 @@ class _Loginpage extends State<LoginPage> {
                         if (snapshot.hasError) {
                           processLogin = false;
                           final errorMessage = snapshot.error is StatusErrorException
-                              ? "Mauvais Identifiant ou Mot de passe"
+                              ? "Identifiant ou Mot de passe incorrect"
                               : "Erreur réseau veuillez réessayer plus tard";
-                          return Column(children: [
-                            MyPadding(child: MyText(errorMessage)),
-                            LoginButton(onPressed: _dologin),
-                          ]);
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 4.0, bottom: 16.0), // Moins de padding en haut, plus de padding en bas
+                                child: Text(
+                                  errorMessage,
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 18.0),
+                                ),
+                              ),
+                              LoginButton(onPressed: _dologin),
+                            ],
+                          );
                         }
                         return Center(child: MyPadding(child: const CircularProgressIndicator()));
                       },
@@ -127,7 +132,7 @@ class _Loginpage extends State<LoginPage> {
       Provider.of<LoginState>(context, listen: false).setUser(User(login: _login, password: _password));
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => MyHomePage()));
-      return _authResult;
+      return authResult;
     });
     setState(() {
       processLogin = true;

@@ -29,7 +29,9 @@ AddProgDialog(BuildContext context, programmeRoutes, {String? message}) => showD
             },
             decoration: InputDecoration(
               hintText: 'Entrez le nom ici',
+              counterText: '',
             ),
+            maxLength: 40, // Limite de caractères à 40
           ),
         ],
       ),

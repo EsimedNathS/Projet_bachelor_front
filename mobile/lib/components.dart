@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/consts.dart';
+import 'package:mobile/pages/LoginPage.dart';
 import 'package:mobile/pages/MyHomePage.dart';
 
 class MyPadding extends Padding {
@@ -42,7 +43,7 @@ showTokenErrorDialog(context, {message}) =>
         ElevatedButton(
             onPressed: () => {
               Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => MyHomePage()),
+                MaterialPageRoute(builder: (context) => LoginPage()),
                 (Route<dynamic> route) => false, // Supprime toutes les routes en dessous
               )
             },

@@ -358,27 +358,6 @@ class _ExercicePageState extends State<ExercicePage> {
     );
   }
 
-  /*
-  addExo(exercice) async {
-    var token = Provider.of<LoginState>(context, listen: false).getToken();
-    var result = await widget.programmeRoutes.addExercice(token, widget.programme!.id!, int.parse(exercice['id']));
-    if (widget.list_exercices == null) {
-      widget.list_exercices = [];
-    }
-    var lenght = widget.list_exercices!.length;
-    setState(() {
-      widget.list_exercices!.add({
-        'name': exercice['name'],
-        'description': exercice['description'],
-        'id': int.parse(exercice['id']),
-        'isFavourite': exercice['isFavourite']
-      });
-    });
-    return result;
-  }
-
-   */
-
   addExo(exercice) async {
     var token = Provider.of<LoginState>(context, listen: false).getToken();
 

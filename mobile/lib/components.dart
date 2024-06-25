@@ -20,7 +20,7 @@ String? stringNotEmptyValidator(String? value, String errorMessage) {
 
 String? verifyLengthValidator(String? value) {
   if (value == null || value.trim().isEmpty || value.length < 10) {
-    return 'Le mot de passe doit contenir au moins 10 caractères';
+    return 'Le mot de passe doit avoir au moins 10 caractères';
   }
   return null;
 }

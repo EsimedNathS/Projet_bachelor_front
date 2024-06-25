@@ -6,7 +6,6 @@ import 'package:mobile/pages/MyHomePage.dart';
 import 'package:mobile/services/LoginState.dart';
 import 'package:mobile/services/UserRoutes.dart';
 import 'package:mobile/model/User.dart';
-import 'package:mobile/pages/LoginPage.dart';
 import 'package:provider/provider.dart';
 
 class SigninPage extends StatefulWidget {
@@ -19,9 +18,8 @@ class SigninPage extends StatefulWidget {
 
 class _Signinpage extends State<SigninPage> {
   final _formKey = GlobalKey<FormState>();
-  late String _username;
   late String _login;
-  late String _password;
+  String _password = ''; // Initialisation par défaut
   String? _loginError;
   var processSignin = false;
 
@@ -32,7 +30,7 @@ class _Signinpage extends State<SigninPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('Inscription'),
       ),
-      body: SingleChildScrollView( // Ajout de SingleChildScrollView
+      body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Padding(
@@ -53,8 +51,16 @@ class _Signinpage extends State<SigninPage> {
                   onSaved: (value) => _login = value.toString(),
                 ),
                 // Champ pour le Password
-                PasswordField(
-                  defaulTextStyle: defaulTextStyle,
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Mot de passe',
+                    icon: Icon(Icons.lock),
+                  ),
+                  style: defaulTextStyle,
+                  maxLength: 25, // Limite de caractères
+                  obscureText: true,
+                  onSaved: (value) => _password = value.toString(),
+                  onChanged: (value) => _password = value,
                   validator: (value) {
                     String? error = stringNotEmptyValidator(value, 'Entrez votre mot de passe');
                     if (error != null) {
@@ -64,10 +70,8 @@ class _Signinpage extends State<SigninPage> {
                     if (error != null) {
                       return error;
                     }
-                    return null;
+                    return null; // Ajout du retour null explicite
                   },
-                  onSaved: (value) => _password = value.toString(),
-                  onChanged: (value) => _password = value,
                 ),
                 // Champ pour la vérification Password
                 PasswordField(
@@ -79,14 +83,13 @@ class _Signinpage extends State<SigninPage> {
                     if (value == null || value.trim().isEmpty) {
                       return 'Entrez votre mot de passe';
                     }
-                    return null;
+                    return null; // Ajout du retour null explicite
                   },
                   onSaved: (value) {},
                 ),
                 if (processSignin)
                   const Center(child: MyPadding(child: CircularProgressIndicator()))
                 else
-                // Bouton pour Sign in
                   Padding(
                     padding: EdgeInsets.only(top: 20, bottom: 20),
                     child: SizedBox(
